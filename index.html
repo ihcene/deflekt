@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deflekt - Developers should never do support</title>
+<meta name="description" content="AI-powered support triage for developers. One command to analyze 60+ tickets, draft bilingual replies, and auto-fix bugs. Open source, bring your own AI key.">
+<meta property="og:title" content="Deflekt - Developers should never do support">
+<meta property="og:description" content="AI-powered support triage for developers. One command to analyze 60+ tickets, draft bilingual replies, and auto-fix bugs.">
+<meta property="og:image" content="screenshots/dashboard_full.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Deflekt - Developers should never do support">
+<meta name="twitter:description" content="AI-powered support triage for developers. Open source, bring your own key.">
+<meta name="twitter:image" content="screenshots/dashboard_full.png">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00ff41;
+    --green-dim: #00cc33;
+    --amber: #ff6600;
+    --bg: #0a0a0a;
+    --bg-light: #111;
+    --bg-card: #1a1a1a;
+    --text: #e0e0e0;
+    --text-dim: #888;
+    --border: #2a2a2a;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Scanline overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---- NAV ---- */
+  nav {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-family: var(--mono);
+    font-size: 18px;
+    color: var(--green);
+    font-weight: 700;
+  }
+  .logo span { color: var(--text-dim); }
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-family: var(--mono);
+    font-size: 14px;
+    margin-left: 24px;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--green); }
+
+  /* ---- HERO ---- */
+  .hero {
+    padding: 100px 0 80px;
+    text-align: center;
+  }
+  .ascii-art {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--green);
+    line-height: 1.2;
+    margin-bottom: 40px;
+    opacity: 0.6;
+    white-space: pre;
+    display: inline-block;
+    text-align: left;
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+  }
+  .hero h1 {
+    font-family: var(--sans);
+    font-size: 48px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+    line-height: 1.1;
+  }
+  .hero .sub {
+    font-family: var(--mono);
+    font-size: 18px;
+    color: var(--green);
+    margin-bottom: 48px;
+  }
+  .terminal-demo {
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 32px;
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 14px;
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 255, 65, 0.05);
+  }
+  .terminal-demo::before {
+    content: '$ ';
+    color: var(--green);
+  }
+  .terminal-demo .cmd {
+    color: #fff;
+  }
+  .terminal-demo .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    background: var(--green);
+    animation: blink 1s step-end infinite;
+    vertical-align: text-bottom;
+    margin-left: 2px;
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+  .terminal-dots {
+    position: absolute;
+    top: 10px;
+    left: 14px;
+    display: flex;
+    gap: 6px;
+  }
+  .terminal-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: block;
+  }
+  .terminal-dots .r { background: #ff5f56; }
+  .terminal-dots .y { background: #ffbd2e; }
+  .terminal-dots .g { background: #27c93f; }
+  .terminal-with-dots {
+    padding-top: 40px;
+  }
+  .terminal-with-dots::before {
+    display: none;
+  }
+  .terminal-output {
+    color: var(--text-dim);
+    margin-top: 8px;
+    line-height: 1.8;
+  }
+  .terminal-output .highlight { color: var(--green); }
+  .terminal-output .amber { color: var(--amber); }
+  .terminal-output .white { color: #fff; }
+
+  /* ---- STORY ---- */
+  .story {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+  }
+  .story blockquote {
+    font-size: 20px;
+    color: var(--text);
+    line-height: 1.7;
+    border-left: 3px solid var(--amber);
+    padding-left: 24px;
+    max-width: 700px;
+    margin: 0 auto;
+    font-style: italic;
+  }
+  .story .attribution {
+    text-align: center;
+    margin-top: 20px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  /* ---- SCREENSHOTS ---- */
+  .screenshots {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+  }
+  .screenshots h2 {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 48px;
+  }
+  .screenshot-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+  .screenshot-item {
+    position: relative;
+  }
+  .screenshot-item .label {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--amber);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .screenshot-item .label::before {
+    content: '>';
+    color: var(--green);
+  }
+  .crt-frame {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 32px rgba(0, 255, 65, 0.06), 0 0 0 1px rgba(0, 255, 65, 0.05);
+    transition: box-shadow 0.3s;
+  }
+  .crt-frame:hover {
+    box-shadow: 0 4px 48px rgba(0, 255, 65, 0.12), 0 0 0 1px rgba(0, 255, 65, 0.1);
+    cursor: zoom-in;
+  }
+
+  /* Lightbox */
+  .lightbox {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.92);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    cursor: zoom-out;
+    padding: 32px;
+  }
+  .lightbox.active {
+    display: flex;
+  }
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 8px;
+    box-shadow: 0 0 60px rgba(0, 255, 65, 0.1);
+  }
+  .crt-frame img {
+    width: 100%;
+    border-radius: 4px;
+    display: block;
+  }
+  .crt-frame::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 255, 65, 0.01) 0%,
+      transparent 50%,
+      rgba(0, 255, 65, 0.01) 100%
+    );
+    pointer-events: none;
+    border-radius: 8px;
+  }
+  .screenshot-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  /* ---- FEATURES ---- */
+  .features {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+  }
+  .features h2 {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 48px;
+  }
+  .feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .feature {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .feature:first-child {
+    border-top: 1px solid var(--border);
+  }
+  .feature .flag {
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--amber);
+    font-weight: 700;
+  }
+  .feature .desc {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* ---- HOW IT WORKS ---- */
+  .how {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+  }
+  .how h2 {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 48px;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .step {
+    text-align: center;
+  }
+  .step .num {
+    font-family: var(--mono);
+    font-size: 36px;
+    color: var(--green);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .step .title {
+    font-family: var(--mono);
+    font-size: 15px;
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .step .detail {
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+  .step-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--green-dim);
+    font-family: var(--mono);
+    font-size: 24px;
+  }
+
+  /* ---- STACK ---- */
+  .stack {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .stack h2 {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 24px;
+  }
+  .stack-line {
+    font-family: var(--mono);
+    font-size: 16px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .stack-sub {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 8px;
+  }
+
+  /* ---- NUMBERS ---- */
+  .numbers {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+  }
+  .numbers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+    text-align: center;
+  }
+  .number-item .value {
+    font-family: var(--mono);
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+  .number-item .label {
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+
+  /* ---- CTA ---- */
+  .cta {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .cta h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  .cta p {
+    color: var(--text-dim);
+    font-size: 16px;
+    margin-bottom: 32px;
+  }
+  .cta-button {
+    display: inline-block;
+    background: var(--amber);
+    color: #000;
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 32px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .cta-button:hover {
+    background: #ff8533;
+    transform: translateY(-1px);
+  }
+  .cta-or {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    margin: 16px 0;
+  }
+  .cta-terminal {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--green);
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 24px;
+    display: inline-block;
+  }
+
+  /* ---- OPEN SOURCE / PRICING ---- */
+  .opensource {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .opensource h2 {
+    font-family: var(--sans);
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  .opensource-intro {
+    color: var(--text-dim);
+    font-size: 16px;
+    margin-bottom: 40px;
+  }
+  .pricing-single {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .pricing-card {
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 36px 32px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .pricing-card.featured {
+    border-color: var(--green-dim);
+    box-shadow: 0 0 24px rgba(0, 255, 65, 0.08);
+  }
+  .pricing-title {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+  .pricing-desc {
+    width: 100%;
+  }
+  .pricing-desc ul {
+    list-style: none;
+    padding: 0;
+  }
+  .pricing-desc li {
+    font-size: 15px;
+    color: var(--text-dim);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .pricing-desc li::before {
+    content: '> ';
+    color: var(--green-dim);
+    font-family: var(--mono);
+  }
+  .pricing-desc li:last-child {
+    border-bottom: none;
+  }
+  .pricing-divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+  .pricing-optional {
+    font-size: 14px;
+    color: var(--text-dim);
+    text-align: center;
+    line-height: 1.6;
+  }
+  .pricing-optional-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* ---- BUILT BY ---- */
+  .builtby {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+  }
+  .builtby h2 {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 32px;
+  }
+  .builtby-card {
+    max-width: 520px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .builtby-name {
+    font-family: var(--sans);
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .builtby-role {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--green-dim);
+    margin-bottom: 16px;
+  }
+  .builtby-text {
+    font-size: 16px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .builtby-link {
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--amber);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .builtby-link:hover {
+    color: #ff8533;
+  }
+
+  /* ---- FOOTER ---- */
+  footer {
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  footer p {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  footer p a {
+    color: var(--green-dim);
+    text-decoration: none;
+  }
+  footer .tagline {
+    margin-top: 8px;
+    color: var(--text-dim);
+    font-style: italic;
+    font-family: var(--sans);
+    font-size: 13px;
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 32px; }
+    .hero .sub { font-size: 15px; }
+    .ascii-art { font-size: 7px; }
+    .screenshot-row { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; gap: 24px; }
+    .numbers-grid { grid-template-columns: 1fr; gap: 24px; }
+    .feature { grid-template-columns: 1fr; gap: 4px; }
+    .terminal-demo { font-size: 12px; padding: 16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="container">
+    <div class="logo">deflekt<span>.dev</span></div>
+    <div>
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#demo">Demo</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="ascii-art">██████╗ ███████╗███████╗██╗     ███████╗██╗  ██╗████████╗
+██╔══██╗██╔════╝██╔════╝██║     ██╔════╝██║ ██╔╝╚══██╔══╝
+██║  ██║█████╗  █████╗  ██║     █████╗  █████╔╝    ██║
+██║  ██║██╔══╝  ██╔══╝  ██║     ██╔══╝  ██╔═██╗    ██║
+██████╔╝███████╗██║     ███████╗███████╗██║  ██╗   ██║
+╚═════╝ ╚══════╝╚═╝     ╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝</div>
+    <h1>Developers should never<br>do support.</h1>
+    <p class="sub">60 tickets. One command. Zero context switching.</p>
+
+    <div class="terminal-demo terminal-with-dots">
+      <div class="terminal-dots">
+        <span class="r"></span>
+        <span class="y"></span>
+        <span class="g"></span>
+      </div>
+      <div>
+        <span style="color: var(--green)">$ </span><span class="cmd">bin/deflekt run</span><span class="cursor"></span>
+      </div>
+      <div class="terminal-output">
+        <div>[09:01] Fetching <span class="white">47</span> open tickets from Freshdesk...</div>
+        <div>[09:01] Analyzing ticket <span class="amber">#48291</span> - Bestelling niet zichtbaar...</div>
+        <div>[09:03] <span class="highlight">&#10003;</span> Root cause identified: order status filter</div>
+        <div>[09:03] <span class="highlight">&#10003;</span> Reply drafted (NL + FR)</div>
+        <div>[09:03] <span class="highlight">&#10003;</span> Bug auto-fixed &rarr; PR <span class="amber">#1847</span> created</div>
+        <div>[09:04] Analyzing ticket <span class="amber">#48293</span>...</div>
+        <div style="color: var(--text-dim)">...</div>
+        <div>[09:31] <span class="white">Done.</span> 47 tickets triaged. 3 bugs auto-fixed.</div>
+        <div>[09:31] Briefing ready at <span class="highlight">localhost:4567</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Story -->
+<section class="story">
+  <div class="container">
+    <blockquote>
+      "I'm a solo dev maintaining a SaaS used by thousands. Every morning: 60+ support tickets in Dutch, a language I don't speak, spread across Freshdesk and Intercom. I was mass-closing tickets at 11pm. Something had to change."
+    </blockquote>
+    <p class="attribution">- the developer who built this, probably at 11pm</p>
+  </div>
+</section>
+
+<!-- Screenshots -->
+<section class="screenshots" id="demo">
+  <div class="container">
+    <h2>See it in action</h2>
+    <div class="screenshot-grid">
+      <div class="screenshot-item">
+        <div class="label">Dashboard - your entire support queue at a glance</div>
+        <div class="crt-frame" onclick="openLightbox(this.querySelector('img'))">
+          <img src="screenshots/dashboard_full.png" alt="Triage dashboard showing ticket list with priorities, categories, and autofix status">
+        </div>
+      </div>
+      <div class="screenshot-row">
+        <div class="screenshot-item">
+          <div class="label">AI analysis with suggested replies</div>
+          <div class="crt-frame" onclick="openLightbox(this.querySelector('img'))">
+            <img src="screenshots/ticket_analysis.png" alt="Ticket detail showing AI-generated analysis and bilingual reply">
+          </div>
+        </div>
+        <div class="screenshot-item">
+          <div class="label">Daily briefing with patterns</div>
+          <div class="crt-frame" onclick="openLightbox(this.querySelector('img'))">
+            <img src="screenshots/briefing.png" alt="Daily briefing showing executive summary and ticket patterns">
+          </div>
+        </div>
+      </div>
+      <div class="screenshot-item">
+        <div class="label">Autofix diff - review AI-generated code changes</div>
+        <div class="crt-frame" onclick="openLightbox(this.querySelector('img'))">
+          <img src="screenshots/diff_view.png" alt="Diff viewer showing AI-generated code fix with red/green changes">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+  <div class="container">
+    <h2>What it does</h2>
+    <div class="feature-list">
+      <div class="feature">
+        <div class="flag">--analyze</div>
+        <div class="desc">AI reads every ticket, understands the issue, checks your codebase, and queries production data. In any language.</div>
+      </div>
+      <div class="feature">
+        <div class="flag">--dashboard</div>
+        <div class="desc">Web UI to filter, review, and act on your entire support queue. Priorities, categories, and status at a glance.</div>
+      </div>
+      <div class="feature">
+        <div class="flag">--autofix</div>
+        <div class="desc">Finds the bug in your code, writes the fix, runs your tests, and opens a draft PR. You just review the diff.</div>
+      </div>
+      <div class="feature">
+        <div class="flag">--reply</div>
+        <div class="desc">Drafts bilingual customer replies in your tone and voice. Copy, paste, send. Or approve from the dashboard.</div>
+      </div>
+      <div class="feature">
+        <div class="flag">--briefing</div>
+        <div class="desc">Daily patterns across all tickets. What is breaking, what is urgent, what you can batch-close.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="how" id="how">
+  <div class="container">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <div class="title">Connect</div>
+        <div class="detail">Point it at your Freshdesk and your codebase. One config file.</div>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <div class="title">Run</div>
+        <div class="detail">$ bin/deflekt run<br>Go get coffee.</div>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <div class="title">Review</div>
+        <div class="detail">Open the dashboard. Approve replies, review PRs, close tickets.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Numbers -->
+<section class="numbers">
+  <div class="container">
+    <div class="numbers-grid">
+      <div class="number-item">
+        <div class="value">3h &rarr; 15m</div>
+        <div class="label">Daily support time</div>
+      </div>
+      <div class="number-item">
+        <div class="value">47</div>
+        <div class="label">Tickets triaged before your first coffee</div>
+      </div>
+      <div class="number-item">
+        <div class="value">1</div>
+        <div class="label">Developer needed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stack -->
+<section class="stack">
+  <div class="container">
+    <h2>The stack</h2>
+    <p class="stack-line">Ruby + Sinatra + htmx + SQLite + Claude</p>
+    <p class="stack-sub">No Kubernetes. No microservices. Just one script.</p>
+  </div>
+</section>
+
+<!-- Open Source -->
+<section class="opensource" id="pricing">
+  <div class="container">
+    <h2>Open source. Bring your own keys.</h2>
+    <p class="opensource-intro">No vendor lock-in. No SaaS subscription. You own the code. Your data never leaves your infrastructure.</p>
+    <div class="pricing-single">
+      <div class="pricing-card featured">
+        <div class="pricing-title">One-time setup</div>
+        <div class="pricing-desc">
+          <ul>
+            <li>Full source code, yours to keep forever</li>
+            <li>Bring your own AI key (Claude, OpenAI, ...)</li>
+            <li>Custom integrations for your stack and workflow</li>
+            <li>Prompt tuning for your domain and tone of voice</li>
+            <li>Self-hosted, runs on your infrastructure</li>
+            <li>Hands-on setup by the developer who built it</li>
+          </ul>
+        </div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-optional">
+          <span class="pricing-optional-label">Optional</span>
+          Monthly support, new features, and ongoing prompt improvements
+        </div>
+        <a href="mailto:hello@deflekt.dev" class="cta-button" style="margin-top: 24px;">Book a 15-min call</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Built by -->
+<section class="builtby">
+  <div class="container">
+    <h2>Built by</h2>
+    <div class="builtby-card">
+      <p class="builtby-name">Ihc&egrave;ne Medjber</p>
+      <p class="builtby-role">Lead Backend Engineer &middot; Entrepreneur &middot; MSc Computational Biology</p>
+      <p class="builtby-text">Ruby engineer and startup founder. I built Deflekt because I was drowning in 60+ daily tickets in a language I don't speak while maintaining a SaaS used by thousands. Now I ship code instead.</p>
+      <a href="https://www.linkedin.com/in/ihc%C3%A8ne-medjber-35b160b0/" target="_blank" class="builtby-link">LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="container">
+    <h2>Stop doing support.</h2>
+    <p>Let AI triage your tickets while you ship code.</p>
+    <a href="mailto:hello@deflekt.dev" class="cta-button">Get started</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p>Built with care and too many late nights by <a href="https://www.linkedin.com/in/ihc%C3%A8ne-medjber-35b160b0/" target="_blank">one developer</a></p>
+    <p class="tagline">One developer. One tool. Zero excuses.</p>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+function openLightbox(img) {
+  var lb = document.getElementById('lightbox');
+  document.getElementById('lightbox-img').src = img.src;
+  document.getElementById('lightbox-img').alt = img.alt;
+  lb.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLightbox();
+});
+</script>
+
+</body>
+</html>

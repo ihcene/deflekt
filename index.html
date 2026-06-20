@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Deflekt - Developers should never do support</title>
-<meta name="description" content="AI-powered support triage for developers. One command to analyze 60+ tickets, draft bilingual replies, and auto-fix bugs. Open source, bring your own AI key.">
+<meta name="description" content="AI-powered support triage for dev teams. Analyze tickets, draft multilingual replies, and auto-fix bugs directly from your codebase.">
 <meta property="og:title" content="Deflekt - Developers should never do support">
-<meta property="og:description" content="AI-powered support triage for developers. One command to analyze 60+ tickets, draft bilingual replies, and auto-fix bugs.">
+<meta property="og:description" content="AI-powered support triage for dev teams. Analyze tickets, draft multilingual replies, and auto-fix bugs directly from your codebase.">
 <meta property="og:image" content="screenshots/dashboard_full.png">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Deflekt - Developers should never do support">
-<meta name="twitter:description" content="AI-powered support triage for developers. Open source, bring your own key.">
+<meta name="twitter:description" content="AI-powered support triage for dev teams. Analyze, reply, and auto-fix from your codebase.">
 <meta name="twitter:image" content="screenshots/dashboard_full.png">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -90,6 +90,34 @@
     transition: color 0.2s;
   }
   nav a:hover { color: var(--green); }
+  .nav-links { display: flex; align-items: center; }
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+  }
+  .hamburger svg { display: block; }
+  @media (max-width: 768px) {
+    .hamburger { display: block; }
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-direction: column;
+      padding: 16px 24px;
+      gap: 12px;
+      z-index: 100;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { margin-left: 0; }
+    nav .container { position: relative; }
+  }
 
   /* ---- HERO ---- */
   .hero {
@@ -330,9 +358,8 @@
     grid-template-columns: 160px 1fr;
     gap: 16px;
     padding: 20px 0;
-    border-bottom: 1px solid var(--border);
   }
-  .feature:first-child {
+  .feature + .feature {
     border-top: 1px solid var(--border);
   }
   .feature .flag {
@@ -345,6 +372,81 @@
     font-size: 15px;
     color: var(--text-dim);
     line-height: 1.6;
+  }
+  .feature-group-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 24px 0 4px;
+    margin: 0;
+  }
+  .feature-group-title:first-child {
+    padding-top: 0;
+  }
+
+  /* ---- INTEGRATIONS ---- */
+  .integrations {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+  }
+  .integrations h2 {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+  }
+  .integrations-sub {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 15px;
+    margin-bottom: 48px;
+  }
+  .integrations-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .integration-card {
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 16px;
+    text-align: center;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .integration-card:hover {
+    border-color: var(--green-dim);
+    box-shadow: 0 0 16px rgba(0, 255, 65, 0.06);
+  }
+  .integration-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+    line-height: 1;
+  }
+  .integration-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+  .integration-name {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: #fff;
+    font-weight: 600;
+  }
+  .integration-type {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+  @media (max-width: 768px) {
+    .integrations-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
   /* ---- HOW IT WORKS ---- */
@@ -419,10 +521,14 @@
     margin-bottom: 8px;
   }
   .stack-sub {
-    font-family: var(--mono);
-    font-size: 13px;
+    font-family: var(--sans);
+    font-size: 15px;
     color: var(--text-dim);
-    margin-top: 8px;
+    margin-top: 12px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
   }
 
   /* ---- NUMBERS ---- */
@@ -676,10 +782,16 @@
 <nav>
   <div class="container">
     <div class="logo">deflekt<span>.dev</span></div>
-    <div>
+    <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="nav-links">
       <a href="#features">Features</a>
+      <a href="#integrations">Integrations</a>
       <a href="#how">How it works</a>
       <a href="#demo">Demo</a>
+      <a href="#pricing">Pricing</a>
+      <a href="https://app.deflekt.dev" target="_blank" style="color: var(--green); border: 1px solid var(--green); border-radius: 4px; padding: 4px 12px;">Log in</a>
     </div>
   </div>
 </nav>
@@ -707,8 +819,8 @@
       </div>
       <div class="terminal-output">
         <div>[09:01] Fetching <span class="white">47</span> open tickets from Freshdesk...</div>
-        <div>[09:01] Analyzing ticket <span class="amber">#48291</span> - Bestelling niet zichtbaar...</div>
-        <div>[09:03] <span class="highlight">&#10003;</span> Root cause identified: order status filter</div>
+        <div>[09:01] Analyzing ticket <span class="amber">#48291</span> - Upload fails for large files...</div>
+        <div>[09:03] <span class="highlight">&#10003;</span> Root cause identified: missing size validation</div>
         <div>[09:03] <span class="highlight">&#10003;</span> Reply drafted (NL + FR)</div>
         <div>[09:03] <span class="highlight">&#10003;</span> Bug auto-fixed &rarr; PR <span class="amber">#1847</span> created</div>
         <div>[09:04] Analyzing ticket <span class="amber">#48293</span>...</div>
@@ -724,9 +836,9 @@
 <section class="story">
   <div class="container">
     <blockquote>
-      "I'm a solo dev maintaining a SaaS used by thousands. Every morning: 60+ support tickets in Dutch, a language I don't speak, spread across Freshdesk and Intercom. I was mass-closing tickets at 11pm. Something had to change."
+      "Support tickets pile up every morning. Customers write in languages your team doesn't speak. Bugs hide in the backlog because nobody has time to investigate. Deflekt reads every ticket, traces bugs to the source code, and drafts replies your customers actually understand."
     </blockquote>
-    <p class="attribution">- the developer who built this, probably at 11pm</p>
+    <p class="attribution">Built for dev teams who ship, not triage</p>
   </div>
 </section>
 
@@ -770,25 +882,99 @@
   <div class="container">
     <h2>What it does</h2>
     <div class="feature-list">
+      <p class="feature-group-title">Analysis</p>
       <div class="feature">
         <div class="flag">--analyze</div>
         <div class="desc">AI reads every ticket, understands the issue, checks your codebase, and queries production data. In any language.</div>
       </div>
       <div class="feature">
-        <div class="flag">--dashboard</div>
-        <div class="desc">Web UI to filter, review, and act on your entire support queue. Priorities, categories, and status at a glance.</div>
+        <div class="flag">--attachments</div>
+        <div class="desc">Analyzes images, PDFs, CSVs, and logs attached to tickets using vision AI. No manual download needed.</div>
       </div>
+      <div class="feature">
+        <div class="flag">--query</div>
+        <div class="desc">Runs production database lookups to verify root causes and pull real customer data into the analysis.</div>
+      </div>
+      <div class="feature">
+        <div class="flag">--sources</div>
+        <div class="desc">Ingests from Freshdesk, Sentry, JIRA, and more into a single prioritized queue.</div>
+      </div>
+      <p class="feature-group-title">Automation</p>
       <div class="feature">
         <div class="flag">--autofix</div>
         <div class="desc">Finds the bug in your code, writes the fix, runs your tests, and opens a draft PR. You just review the diff.</div>
       </div>
       <div class="feature">
         <div class="flag">--reply</div>
-        <div class="desc">Drafts bilingual customer replies in your tone and voice. Copy, paste, send. Or approve from the dashboard.</div>
+        <div class="desc">Drafts multilingual customer replies in your tone and voice. High-confidence replies can be sent with one click.</div>
       </div>
+      <p class="feature-group-title">Intelligence</p>
       <div class="feature">
         <div class="flag">--briefing</div>
         <div class="desc">Daily patterns across all tickets. What is breaking, what is urgent, what you can batch-close.</div>
+      </div>
+      <div class="feature">
+        <div class="flag">--memory</div>
+        <div class="desc">Harvests institutional knowledge from every resolved ticket. Builds a searchable knowledge base that gets smarter over time.</div>
+      </div>
+      <p class="feature-group-title">Visibility</p>
+      <div class="feature">
+        <div class="flag">--dashboard</div>
+        <div class="desc">Web UI to filter, review, and act on your entire support queue. Priorities, categories, and status at a glance.</div>
+      </div>
+      <div class="feature">
+        <div class="flag">--costs</div>
+        <div class="desc">Tracks AI spend per ticket, per attachment, and per week. Know exactly what triage costs before your bill arrives.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Integrations -->
+<section class="integrations" id="integrations">
+  <div class="container">
+    <h2>Integrations</h2>
+    <p class="integrations-sub">Connects to the tools your team already uses.</p>
+    <div class="integrations-grid">
+      <div class="integration-card">
+        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" stroke="#27ae60" stroke-width="1.5"/><path d="M2 8h20M8 8v12" stroke="#27ae60" stroke-width="1.5"/></svg></div>
+        <div class="integration-name">Freshdesk</div>
+        <div class="integration-type">Support</div>
+      </div>
+      <div class="integration-card">
+        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#6c5ce7" stroke-width="1.5"/><path d="M12 6v6l4 2" stroke="#6c5ce7" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="integration-name">Intercom</div>
+        <div class="integration-type">Support</div>
+      </div>
+      <div class="integration-card">
+        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#e74c3c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="integration-name">Zendesk</div>
+        <div class="integration-type">Support</div>
+      </div>
+      <div class="integration-card">
+        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" stroke="#362773" stroke-width="1.5"/><path d="M8 14l2-4h4l2 4" stroke="#362773" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="integration-name">Sentry</div>
+        <div class="integration-type">Error tracking</div>
+      </div>
+      <div class="integration-card">
+        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="#0052cc" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="6" r="1.5" fill="#0052cc"/><circle cx="12" cy="12" r="1.5" fill="#0052cc"/><circle cx="8" cy="18" r="1.5" fill="#0052cc"/></svg></div>
+        <div class="integration-name">JIRA</div>
+        <div class="integration-type">Project tracking</div>
+      </div>
+      <div class="integration-card">
+        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" stroke="#f0f0f0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="integration-name">GitHub</div>
+        <div class="integration-type">Code & PRs</div>
+      </div>
+      <div class="integration-card">
+        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" stroke="#999" stroke-width="1.5"/><path d="M14 2v6h6M8 13h8M8 17h8M8 9h2" stroke="#999" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="integration-name">Notion</div>
+        <div class="integration-type">Knowledge base</div>
+      </div>
+      <div class="integration-card">
+        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z" fill="#e01e5a"/><path d="M20.5 10H19v-1.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" fill="#e01e5a"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z" fill="#2eb67d"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z" fill="#2eb67d"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z" fill="#ecb22e"/><path d="M14 20.5v-1.5h1.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5z" fill="#ecb22e"/><path d="M10 9.5c0 .83-.67 1.5-1.5 1.5h-5C2.67 11 2 10.33 2 9.5S2.67 8 3.5 8h5c.83 0 1.5.67 1.5 1.5z" fill="#36c5f0"/><path d="M10 3.5V5H8.5C7.67 5 7 4.33 7 3.5S7.67 2 8.5 2s1.5.67 1.5 1.5z" fill="#36c5f0"/></svg></div>
+        <div class="integration-name">Slack</div>
+        <div class="integration-type">Notifications</div>
       </div>
     </div>
   </div>
@@ -802,17 +988,17 @@
       <div class="step">
         <div class="num">1</div>
         <div class="title">Connect</div>
-        <div class="detail">Point it at your Freshdesk and your codebase. One config file.</div>
+        <div class="detail">Connect your support tools, repos, and production database. Multi-repo, multi-source, one config.</div>
       </div>
       <div class="step">
         <div class="num">2</div>
-        <div class="title">Run</div>
-        <div class="detail">$ bin/deflekt run<br>Go get coffee.</div>
+        <div class="title">Analyze</div>
+        <div class="detail">Deflekt reads every ticket against your codebase, recent PRs, and production data.</div>
       </div>
       <div class="step">
         <div class="num">3</div>
         <div class="title">Review</div>
-        <div class="detail">Open the dashboard. Approve replies, review PRs, close tickets.</div>
+        <div class="detail">Review prioritized results in the dashboard. Approve replies, merge fixes, close tickets.</div>
       </div>
     </div>
   </div>
@@ -831,59 +1017,66 @@
         <div class="label">Tickets triaged before your first coffee</div>
       </div>
       <div class="number-item">
-        <div class="value">1</div>
-        <div class="label">Developer needed</div>
+        <div class="value">0</div>
+        <div class="label">Support hires needed</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Stack -->
+<!-- Architecture -->
 <section class="stack">
   <div class="container">
-    <h2>The stack</h2>
-    <p class="stack-line">Ruby + Sinatra + htmx + SQLite + Claude</p>
-    <p class="stack-sub">No Kubernetes. No microservices. Just one script.</p>
+    <h2>Architecture</h2>
+    <p class="stack-line">SaaS hub + self-hosted workers</p>
+    <p class="stack-sub">The dashboard runs in the cloud. The workers that read your code and talk to your AI provider run on your infrastructure. Your source code never leaves your network.</p>
   </div>
 </section>
 
-<!-- Open Source -->
+<!-- Pricing -->
 <section class="opensource" id="pricing">
   <div class="container">
-    <h2>Open source. Bring your own keys.</h2>
-    <p class="opensource-intro">No vendor lock-in. No SaaS subscription. You own the code. Your data never leaves your infrastructure.</p>
+    <h2>Your code stays yours.</h2>
+    <p class="opensource-intro">Deflekt runs as a SaaS, but the workers that read your code and talk to Claude can run on your infrastructure. Your codebase never leaves your perimeter.</p>
     <div class="pricing-single">
       <div class="pricing-card featured">
-        <div class="pricing-title">One-time setup</div>
+        <div class="pricing-title">Get started</div>
         <div class="pricing-desc">
           <ul>
-            <li>Full source code, yours to keep forever</li>
+            <li>Managed SaaS dashboard, no setup required</li>
+            <li>Workers run on your infrastructure, next to your code</li>
             <li>Bring your own AI key (Claude, OpenAI, ...)</li>
             <li>Custom integrations for your stack and workflow</li>
             <li>Prompt tuning for your domain and tone of voice</li>
-            <li>Self-hosted, runs on your infrastructure</li>
-            <li>Hands-on setup by the developer who built it</li>
           </ul>
         </div>
         <div class="pricing-divider"></div>
         <div class="pricing-optional">
-          <span class="pricing-optional-label">Optional</span>
-          Monthly support, new features, and ongoing prompt improvements
+          <span class="pricing-optional-label">Fully managed option</span>
+          We host everything, including workers. Ideal for teams that prefer zero ops.
         </div>
-        <a href="mailto:hello@deflekt.dev" class="cta-button" style="margin-top: 24px;">Book a 15-min call</a>
+        <a href="mailto:hello@deflekt.dev" class="cta-button" style="margin-top: 24px;">Book a demo</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Built by -->
+<!-- About -->
 <section class="builtby">
   <div class="container">
-    <h2>Built by</h2>
+    <h2>About</h2>
     <div class="builtby-card">
       <p class="builtby-name">Ihc&egrave;ne Medjber</p>
-      <p class="builtby-role">Lead Backend Engineer &middot; Entrepreneur &middot; MSc Computational Biology</p>
-      <p class="builtby-text">Ruby engineer and startup founder. I built Deflekt because I was drowning in 60+ daily tickets in a language I don't speak while maintaining a SaaS used by thousands. Now I ship code instead.</p>
+      <p class="builtby-role">Founder & CEO &middot; Lead Backend Engineer &middot; MSc Computational Biology</p>
+      <p class="builtby-text">15+ years building and scaling SaaS products. Senior Backend Specialist at Silverfin (fintech) and Cowboy (electric bikes, 100K+ users), CTO at Cureety (health-tech). Deflekt was born from running production support on a multilingual platform with thousands of daily active users.</p>
+      <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 15px;">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--bg-card); border: 2px dashed var(--green-dim); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green-dim)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 20c0-4 3.5-7 7-7s7 3 7 7"/><path d="M15 5l2-2m0 0l2 2m-2-2v4"/></svg>
+        </div>
+        <p class="builtby-text" style="margin: 0;">Looking for a business co-founder to take Deflekt to market. The product works, the tech is solid. Now it needs someone who lives and breathes sales, partnerships, and growth.</p>
+      </div>
+      <a href="mailto:hello@deflekt.dev" class="builtby-link">Let's talk &rarr;</a>
+      &nbsp;&nbsp;
       <a href="https://www.linkedin.com/in/ihc%C3%A8ne-medjber-35b160b0/" target="_blank" class="builtby-link">LinkedIn</a>
     </div>
   </div>
@@ -892,17 +1085,17 @@
 <!-- CTA -->
 <section class="cta">
   <div class="container">
-    <h2>Stop doing support.</h2>
-    <p>Let AI triage your tickets while you ship code.</p>
-    <a href="mailto:hello@deflekt.dev" class="cta-button">Get started</a>
+    <h2>Your team should ship, not triage.</h2>
+    <p>See how Deflekt handles your support queue in a 15-minute demo.</p>
+    <a href="mailto:hello@deflekt.dev" class="cta-button">Book a demo</a>
   </div>
 </section>
 
 <!-- Footer -->
 <footer>
   <div class="container">
-    <p>Built with care and too many late nights by <a href="https://www.linkedin.com/in/ihc%C3%A8ne-medjber-35b160b0/" target="_blank">one developer</a></p>
-    <p class="tagline">One developer. One tool. Zero excuses.</p>
+    <p>&copy; 2026 Deflekt. Built in Brussels.</p>
+    <p class="tagline">Let your team ship code, not triage tickets.</p>
   </div>
 </footer>
 

@@ -240,6 +240,9 @@
   .agents h4 { font-family: "Fraunces", serif; font-size: 24px; font-weight: 420; letter-spacing: -.01em; }
   .ask .agents p { font-size: 15.5px; margin-top: 8px; }
   .agents .list { margin-top: 14px; font-family: "Geist Mono", monospace; font-size: 13px; color: var(--ink-3); }
+  .fn { color: var(--brand); font-size: .7em; margin-left: 2px; }
+  .ask .copy p.footnote { margin-top: 22px; font-size: 13.5px; color: var(--ink-3); font-style: italic; max-width: 440px; }
+  .footnote sup { color: var(--brand); font-style: normal; margin-right: 4px; }
   .memo { display: grid; gap: 14px; align-content: start; padding-top: 8px; }
   .memo-slip { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; box-shadow: var(--shadow); font-size: 15.5px; }
   .memo-slip .who { font-family: "Geist Mono", monospace; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); margin-bottom: 6px; }
@@ -658,12 +661,13 @@
     <div class="copy">
       <h2>Your whole company <em>can ask it.</em></h2>
       <p>Sales, support and ops get answers from the code and the data, with the source cited, without interrupting an engineer.</p>
-      <p>Feature requests are checked against what already exists, scoped in the code, and turned into a clear spec. Small ones come with a pull request.</p>
+      <p>Feature requests are checked against what already exists, scoped in the code, and turned into a clear spec. Small ones come with a pull request.<sup class="fn">†</sup></p>
       <div class="agents">
         <h4>Works with the coding agents you already use.</h4>
         <p>Deflekt doesn't replace your IDE or your coding agent. It decides what is worth building, hands the agent the full context, and checks the result.</p>
         <div class="list">Claude Code / Codex / Cursor / any MCP client</div>
       </div>
+      <p class="footnote"><sup>†</sup> And when you say go, it builds the whole feature: code across your repositories, tests, recorded QA, a pull request ready to review. We just think deciding what to build is the harder part.</p>
     </div>
     <div class="memo">
       <div class="memo-slip q"><div class="who">Sarah · Sales</div>Do we already send a reminder before an invoice is due? A prospect is asking.</div>
@@ -786,6 +790,7 @@
         <details><summary>Does it change anything in production on its own?</summary><p>No. Deflekt reads production, it never writes to it. Fixes go through pull requests, your tests and your review. Console commands are prepared for a human to run.</p></details>
         <details><summary>Where does my code run?</summary><p>Workers that read code, run tests and record QA run on your infrastructure. The hub only stores analyses and results. A fully self hosted setup is available.</p></details>
         <details><summary>Which languages and stacks does it support?</summary><p>Any language your customers write in, and any stack your engineers work in. It runs daily on Rails, React and React Native codebases, with tickets in Dutch, French and English.</p></details>
+        <details><summary>Can it build features, not just fix bugs?</summary><p>Yes. Once a request is scoped and your team approves the spec, Deflekt implements it the same way it ships fixes: across every repository involved, with tests, a recorded before and after, and review rounds on the pull request. It is simply not where we think most of the value is.</p></details>
         <details><summary>How much does it cost?</summary><p>We are onboarding a small group of design partners: we set Deflekt up on your stack and tune it with you. Pricing depends on the size of your team and is discussed on the first call.</p></details>
       </div>
     </div>

@@ -24,7 +24,7 @@ const clips = lines.map((text, i) => {
 });
 
 let t = lead;
-const timeline = { lines: lines.map((text, i) => { const d = duration(clips[i]); const l = { text, start: t, end: t + d }; t += d + gap + (i === 3 || i === 6 ? 0.5 : 0); return l; }) };
+const timeline = { lines: lines.map((text, i) => { const d = duration(clips[i]); const l = { text, start: t, end: t + d }; t += d + gap + (i === 3 || i === lines.length - 2 ? 0.5 : 0); return l; }) };
 timeline.end = timeline.lines.at(-1).end + tail;
 writeFileSync(join(tmp, "timeline.json"), JSON.stringify(timeline, null, 2));
 
@@ -47,7 +47,7 @@ for (let f = 0; f < total; f++) {
   await page.evaluate(s => window.render(s), f / fps);
   await page.screenshot({ path: join(frames, `${String(f).padStart(5, "0")}.jpg`), type: "jpeg", quality: 92 });
 }
-await page.evaluate(s => window.render(s), timeline.lines[2].start + 4);
+await page.evaluate(s => window.render(s), timeline.lines[0].start + 5.5);
 await page.screenshot({ path: join(out, "hero-poster.jpg"), type: "jpeg", quality: 85 });
 await browser.close();
 

@@ -389,18 +389,18 @@
 
 <div class="ticker" aria-hidden="true">
   <div class="ticker-track">
-    <span><i class="b">●</i>FRESHDESK  Onze facturen zijn verdwenen</span>
+    <span><i class="b">●</i>FRESHDESK  Twee keer afgeschreven deze maand</span>
     <span><i class="s">▲</i>SENTRY  NoMethodError in ExportJob ×340</span>
     <span><i class="y">◆</i>DATA WATCH  exports.rows_written fell to 0</span>
-    <span><i class="b">✓</i>PR #1847  verified side by side, ready to merge</span>
+    <span><i class="b">✓</i>MOLLIE  38 subscriptions charged twice · €4,218</span>
     <span><i class="b">●</i>ZENDESK  Export CSV vide depuis hier</span>
     <span><i class="y">◆</i>REGULATOR  Electronic invoicing mandatory from Jan 1</span>
     <span><i class="b">?</i>SLACK  Do we already send a reminder before the due date?</span>
     <span><i class="b">✓</i>REPLY  drafted in Dutch, waiting for approval</span>
-    <span><i class="b">●</i>FRESHDESK  Onze facturen zijn verdwenen</span>
+    <span><i class="b">●</i>FRESHDESK  Twee keer afgeschreven deze maand</span>
     <span><i class="s">▲</i>SENTRY  NoMethodError in ExportJob ×340</span>
     <span><i class="y">◆</i>DATA WATCH  exports.rows_written fell to 0</span>
-    <span><i class="b">✓</i>PR #1847  verified side by side, ready to merge</span>
+    <span><i class="b">✓</i>MOLLIE  38 subscriptions charged twice · €4,218</span>
     <span><i class="b">●</i>ZENDESK  Export CSV vide depuis hier</span>
     <span><i class="y">◆</i>REGULATOR  Electronic invoicing mandatory from Jan 1</span>
     <span><i class="b">?</i>SLACK  Do we already send a reminder before the due date?</span>
@@ -450,22 +450,22 @@
 
     <div class="stack" aria-label="Example of a case investigated by Deflekt">
       <div class="slip back1"><div class="slip-head"><b>Sentry</b><span></span></div></div>
-      <div class="slip back2"><div class="slip-head"><b>Data Watch</b><span>rows_written → 0</span></div></div>
+      <div class="slip back2"><div class="slip-head"><b>Data Watch</b><span>charges per renewal → 2</span></div></div>
       <div class="slip front">
-        <div class="slip-head"><b>Case #4821</b><span>Freshdesk · NL · 08:42</span></div>
+        <div class="slip-head"><b>Case #5172</b><span>Freshdesk · NL · 08:42</span></div>
         <span class="stamp urgent">Urgent</span>
-        <p class="quote">“Onze facturen van maart zijn verdwenen uit het overzicht.”</p>
-        <p class="from">Anna, Brightline Logistics · 14 previous tickets</p>
+        <p class="quote">“Mijn abonnement is deze maand twee keer afgeschreven.”</p>
+        <p class="from">Pieter, Van Damme Bouw · customer since 2021</p>
         <ul class="trail">
-          <li><span>08:42</span><div>Queried production: <b>212 invoices</b> hidden</div></li>
-          <li><span>08:43</span><div>Traced to <b>InvoiceFilter#visible</b>, PR #1839</div></li>
-          <li><span>08:43</span><div>Same cause as <b>5 open tickets</b></div></li>
-          <li><span>08:51</span><div>Fix recorded <b>before and after</b></div></li>
+          <li><span>08:43</span><div>Read the payments: <b>38 customers</b> charged twice</div></li>
+          <li><span>08:43</span><div><b>€4,218</b> taken since yesterday 17:05</div></li>
+          <li><span>08:44</span><div>Traced to a webhook retry, <b>PR #2214</b></div></li>
+          <li><span>08:44</span><div><b>37 of them</b> haven't noticed yet</div></li>
         </ul>
         <div class="perf"></div>
         <div class="outcome">
-          <div><div class="k">Reply</div><div class="v">Drafted in Dutch</div></div>
-          <div><div class="k">Fix</div><div class="v">PR #1847 · 12 lines</div></div>
+          <div><div class="k">Prepared</div><div class="v">Refunds for 38 · emails</div></div>
+          <div><div class="k">Fix</div><div class="v">PR #2231 · 9 lines</div></div>
         </div>
         <span class="stamp verified">Fix verified</span>
       </div>
@@ -504,9 +504,9 @@
 
     <div class="case">
       <aside class="case-rail">
-        <div class="big">#4821</div>
-        <p>Invoices missing from the overview, reported in Dutch by an accounting customer.</p>
-        <div class="meta"><span>Opened 08:42</span><span>Answer ready 08:51</span><span>Human time: 4 min</span></div>
+        <div class="big">#5172</div>
+        <p>One customer writes in Dutch about a double charge. Thirty eight were charged twice. Thirty seven have not noticed yet.</p>
+        <div class="meta"><span>Opened 08:42</span><span>Everything ready 08:52</span><span>€4,218 back before anyone else writes</span></div>
       </aside>
 
       <div class="steps">
@@ -520,11 +520,11 @@
           <div class="artifact">
             <div class="artifact-tab"><b>Incoming</b><span>last hour</span></div>
             <div class="artifact-body rows">
-              <div class="row"><span class="src">Freshdesk</span><span class="t">Onze facturen zijn verdwenen</span><span class="pill s">Urgent</span></div>
-              <div class="row"><span class="src">Zendesk</span><span class="t">Factures de mars introuvables</span><span class="pill b">Grouped</span></div>
-              <div class="row"><span class="src">Sentry</span><span class="t">NoMethodError in ExportJob</span><span class="pill">×340</span></div>
+              <div class="row"><span class="src">Freshdesk</span><span class="t">Twee keer afgeschreven deze maand</span><span class="pill s">Urgent</span></div>
+              <div class="row"><span class="src">Zendesk</span><span class="t">Double prélèvement sur ma carte</span><span class="pill b">Grouped</span></div>
+              <div class="row"><span class="src">Sentry</span><span class="t">Timeout in PaymentWebhook</span><span class="pill">×212</span></div>
               <div class="row"><span class="src">Slack</span><span class="t">Can we add the VAT number to exports?</span><span class="pill">Request</span></div>
-              <div class="row"><span class="src">Data Watch</span><span class="t">exports.rows_written fell to 0</span><span class="pill s">Anomaly</span></div>
+              <div class="row"><span class="src">Data Watch</span><span class="t">charges per renewal rose to 2</span><span class="pill s">Anomaly</span></div>
             </div>
           </div>
         </div>
@@ -537,17 +537,17 @@
             <ul><li>Read only access to databases, payments and email logs</li><li>Screenshots, PDFs, CSVs and logs understood</li><li>Data loss, money and blocked customers first</li></ul>
           </div>
           <div class="artifact">
-            <div class="artifact-tab"><b>Investigation</b><span>case #4821</span></div>
+            <div class="artifact-tab"><b>Investigation</b><span>case #5172</span></div>
             <div class="term">
               <div class="c"># who is asking</div>
-              <div>Brightline Logistics · <span class="g">14 tickets</span> · plan Pro</div>
-              <div class="c"># production, read only</div>
-              <div>SELECT count(*) FROM invoices WHERE hidden_at IS NOT NULL</div>
-              <div class="y">→ 212 rows since Oct 28</div>
+              <div>Van Damme Bouw · <span class="g">customer since 2021</span> · plan Pro</div>
+              <div class="c"># payments, read only</div>
+              <div>renewals charged more than once since Oct 31</div>
+              <div class="y">→ 38 subscriptions · €4,218.40 · 1 complaint</div>
               <div class="c"># code and history</div>
-              <div>invoice_filter.rb:41 changed in <span class="g">PR #1839</span></div>
+              <div>payment_webhook.rb:27 lost its idempotency key in <span class="g">PR #2214</span></div>
               <div class="c"># verdict</div>
-              <div>bug · <span class="r">urgent</span> · customer blocked, no workaround</div>
+              <div>bug · <span class="r">urgent</span> · money taken wrongly, 37 unaware</div>
             </div>
           </div>
         </div>
@@ -556,16 +556,16 @@
           <div>
             <div class="time"><b>08:47</b> · 03 Act</div>
             <h3>The right answer, <em>in the right form.</em></h3>
-            <p>Not every ticket needs a fix. Deflekt picks what does the job: a reply in the customer's language and your tone, an internal note, a precise console command, or a pull request across every repository the fix touches.</p>
-            <ul><li>Replies in any language, the way your team writes</li><li>Ready to run commands for single account issues</li><li>Fixes across backend, frontend and mobile</li></ul>
+            <p>Not every ticket needs a fix. Deflekt picks what does the job: a reply in the customer's language and your tone, an internal note, a precise console command, or a pull request across every repository the fix touches. When one complaint hides thirty seven silent ones, it prepares the answer for all of them.</p>
+            <ul><li>Replies in any language, the way your team writes</li><li>Ready to run scripts: refunds, data repairs, unblocks</li><li>Fixes across backend, frontend and mobile</li></ul>
           </div>
           <div class="artifact">
             <div class="artifact-tab"><b>Suggested reply</b><span class="pill ok">High confidence</span></div>
             <div class="artifact-body letter">
-              Dag Anna,<br><br>Uw facturen van maart zijn niet verloren: een filter verbergt ze sinds maandag. We hebben de oorzaak gevonden en een correctie staat klaar. U hoort van ons zodra ze weer zichtbaar zijn.
+              Dag Pieter,<br><br>U heeft gelijk: uw abonnement werd op 31 oktober twee keer afgeschreven, door een fout aan onze kant. Het dubbele bedrag wordt u terugbetaald en staat binnen drie werkdagen op uw rekening. Onze excuses.
               <div class="sig">Drafted in your team's voice</div>
             </div>
-            <div class="also"><span class="pill">+ internal note</span><span class="pill">+ fix in api and web</span></div>
+            <div class="also"><span class="pill">+ refund script, 38 payments</span><span class="pill">+ email to the 37 others</span></div>
           </div>
         </div>
 
@@ -577,10 +577,10 @@
             <ul><li>Side by side environments, recorded</li><li>Your test suite runs before anyone reviews</li><li>Review comments and CI failures addressed</li></ul>
           </div>
           <div class="artifact">
-            <div class="artifact-tab"><b>PR #1847</b><span class="rec">QA recording</span></div>
+            <div class="artifact-tab"><b>PR #2231</b><span class="rec">QA recording</span></div>
             <div class="sbs">
-              <div class="pane base"><div class="h"><span>Before</span><span>main</span></div><div class="screen"><div class="bar" style="width:60%"></div><div class="bar" style="width:35%"></div><div class="n">0</div><div class="cap">invoices in March</div></div></div>
-              <div class="pane fix"><div class="h"><span>After</span><span>fix</span></div><div class="screen"><div class="bar" style="width:60%"></div><div class="bar" style="width:35%"></div><div class="n">212</div><div class="cap">invoices in March</div></div></div>
+              <div class="pane base"><div class="h"><span>Before</span><span>main</span></div><div class="screen"><div class="bar" style="width:60%"></div><div class="bar" style="width:35%"></div><div class="n">2×</div><div class="cap">charged, webhook replayed</div></div></div>
+              <div class="pane fix"><div class="h"><span>After</span><span>fix</span></div><div class="screen"><div class="bar" style="width:60%"></div><div class="bar" style="width:35%"></div><div class="n">1×</div><div class="cap">charged, webhook replayed</div></div></div>
             </div>
             <div class="also"><span class="pill ok">tests passing</span><span class="pill b">recorded</span><span class="pill">2 review rounds</span></div>
           </div>
@@ -596,9 +596,9 @@
           <div class="artifact">
             <div class="artifact-tab"><b>Memory</b><span>billing</span></div>
             <div class="notes">
-              <div class="note"><div class="k"><span>Learned from #3920</span><span>code</span></div><p>Credit notes sent over Peppol cannot be deleted. Create an offsetting record instead.</p></div>
-              <div class="note"><div class="k"><span>Customer file</span><span>people</span></div><p>Brightline Logistics: accountant receives invoices monthly, prefers Dutch.</p></div>
-              <div class="note"><div class="k"><span>Follow up</span><span style="color:var(--signal)">Nov 3</span></div><p>Registration should have propagated by then. Check, then close.</p></div>
+              <div class="note"><div class="k"><span>Learned from #5172</span><span>code</span></div><p>The payment provider retries webhooks up to ten times. Every payment handler must be idempotent.</p></div>
+              <div class="note"><div class="k"><span>Customer file</span><span>people</span></div><p>Van Damme Bouw: refunded on Nov 2. Mention it if they write again.</p></div>
+              <div class="note"><div class="k"><span>Follow up</span><span style="color:var(--signal)">Nov 5</span></div><p>The 38 refunds should have settled by then. Check, then close.</p></div>
             </div>
           </div>
         </div>
@@ -691,8 +691,8 @@
       <div class="news">
         <div class="lead">
           <span class="kicker">Lead story</span>
-          <h3>One filter, <em>nine tickets.</em></h3>
-          <p>Nine of the thirty one open cases share a single cause: the archive filter shipped on October 28 hides recent invoices from the overview. The fix is written, tested and recorded side by side. Merge pull request 1847 first, then send the nine replies already drafted in Dutch and French. Everything else today can wait an hour.</p>
+          <h3>One complaint, <em>thirty eight victims.</em></h3>
+          <p>A single customer wrote in about a double charge. Deflekt found thirty eight subscriptions charged twice since Thursday's deploy, €4,218 in total. The fix is written, tested and recorded side by side. Approve the refund script first, merge pull request 2231, then send the email already drafted for the thirty seven customers who have not noticed yet. Everything else today can wait an hour.</p>
         </div>
         <div>
           <span class="kicker">Ready to ship</span>

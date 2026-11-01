@@ -3,1122 +3,732 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deflekt - Developers should never do support</title>
-<meta name="description" content="AI-powered support triage for dev teams. Analyze tickets, draft multilingual replies, and auto-fix bugs directly from your codebase.">
-<meta property="og:title" content="Deflekt - Developers should never do support">
-<meta property="og:description" content="AI-powered support triage for dev teams. Analyze tickets, draft multilingual replies, and auto-fix bugs directly from your codebase.">
-<meta property="og:image" content="screenshots/dashboard_full.png">
+<title>Deflekt · The AI maintenance engineer for your product</title>
+<meta name="description" content="Deflekt investigates every request your product gets, from customer tickets to errors and silent data bugs, in your code and your production data. It hands your team the answer: a reply, a console command, or a fix tested side by side and ready to merge.">
+<meta property="og:title" content="Deflekt · Every request your product gets, investigated and answered">
+<meta property="og:description" content="The AI maintenance engineer: it listens, investigates in your code and data, answers, fixes with proof, and remembers.">
 <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Deflekt - Developers should never do support">
-<meta name="twitter:description" content="AI-powered support triage for dev teams. Analyze, reply, and auto-fix from your codebase.">
-<meta name="twitter:image" content="screenshots/dashboard_full.png">
+<meta property="og:url" content="https://deflekt.dev">
+<meta name="twitter:card" content="summary">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --green: #00ff41;
-    --green-dim: #00cc33;
-    --amber: #ff6600;
-    --bg: #0a0a0a;
-    --bg-light: #111;
-    --bg-card: #1a1a1a;
-    --text: #e0e0e0;
-    --text-dim: #888;
-    --border: #2a2a2a;
-    --mono: 'JetBrains Mono', monospace;
+    --brand: #0F766E;
+    --brand-dark: #0B4F4A;
+    --brand-soft: #E6F4F2;
+    --ink: #0F172A;
+    --text: #334155;
+    --muted: #64748B;
+    --line: #E2E8F0;
+    --bg: #FFFFFF;
+    --bg-soft: #F8FAFC;
+    --red: #DC2626;
+    --red-soft: #FEF2F2;
+    --amber: #B45309;
+    --amber-soft: #FFFBEB;
+    --green-soft: #F0FDF4;
+    --green: #15803D;
     --sans: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(15,23,42,.04), 0 8px 24px rgba(15,23,42,.06);
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); color: var(--text); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+  h1, h2, h3, h4 { color: var(--ink); line-height: 1.15; letter-spacing: -0.02em; }
+  h2 { font-size: clamp(30px, 4vw, 42px); font-weight: 700; }
+  h3 { font-size: 20px; font-weight: 600; }
+  code, .mono { font-family: var(--mono); font-size: .92em; }
+  .eyebrow { font-family: var(--mono); font-size: 13px; color: var(--brand); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 14px; }
+  .lead { font-size: 19px; color: var(--muted); max-width: 680px; }
+  section { padding: 104px 0; }
+  .section-head { margin-bottom: 56px; }
+  .section-head .lead { margin-top: 16px; }
+  .soft { background: var(--bg-soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 22px; border-radius: 10px; font-weight: 600; font-size: 15px; text-decoration: none; transition: background .15s, border-color .15s; }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-primary:hover { background: var(--brand-dark); }
+  .btn-ghost { border: 1px solid var(--line); color: var(--ink); background: #fff; }
+  .btn-ghost:hover { border-color: var(--muted); }
 
-  /* Scanline overlay */
-  body::after {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0, 0, 0, 0.03) 2px,
-      rgba(0, 0, 0, 0.03) 4px
-    );
-    pointer-events: none;
-    z-index: 9999;
-  }
+  /* Nav */
+  nav { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  nav .container { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
+  .logo svg { height: 26px; width: auto; }
+  .logo span { font-size: 20px; font-weight: 700; color: var(--ink); letter-spacing: -0.03em; }
+  .nav-links { display: flex; align-items: center; gap: 28px; }
+  .nav-links a { text-decoration: none; font-size: 15px; color: var(--text); }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-links .btn { padding: 9px 16px; color: #fff; }
+  .menu-toggle { display: none; }
 
-  .container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 0 24px;
-  }
+  /* Hero */
+  .hero { padding: 88px 0 96px; background: radial-gradient(1200px 500px at 70% -10%, var(--brand-soft), transparent 70%); }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center; }
+  .hero h1 { font-size: clamp(38px, 5.4vw, 60px); font-weight: 700; letter-spacing: -0.035em; }
+  .hero h1 em { font-style: normal; color: var(--brand); }
+  .hero .lead { margin: 24px 0 32px; }
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .trust-line { margin-top: 28px; font-size: 14px; color: var(--muted); display: flex; gap: 8px; align-items: flex-start; }
+  .trust-line svg { flex: none; margin-top: 3px; }
 
-  /* ---- NAV ---- */
-  nav {
-    padding: 20px 0;
-    border-bottom: 1px solid var(--border);
+  /* Product mock cards */
+  .mock { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; font-size: 14px; }
+  .mock-bar { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--bg-soft); font-size: 13px; color: var(--muted); }
+  .mock-bar b { color: var(--ink); font-weight: 600; }
+  .mock-body { padding: 16px; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--bg-soft); border: 1px solid var(--line); color: var(--text); white-space: nowrap; }
+  .tag.urgent { background: var(--red-soft); border-color: #FECACA; color: var(--red); }
+  .tag.brand { background: var(--brand-soft); border-color: #B7E0DA; color: var(--brand-dark); }
+  .tag.ok { background: var(--green-soft); border-color: #BBF7D0; color: var(--green); }
+  .tag.warn { background: var(--amber-soft); border-color: #FDE68A; color: var(--amber); }
+
+  .flow { display: grid; gap: 12px; }
+  .flow .msg { padding: 14px 16px; border-radius: 10px; background: var(--bg-soft); border: 1px solid var(--line); }
+  .flow .msg .who { font-size: 12px; color: var(--muted); margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .flow .msg p { color: var(--ink); }
+  .steps { list-style: none; font-family: var(--mono); font-size: 12.5px; color: var(--muted); display: grid; gap: 6px; padding: 4px 2px; }
+  .steps li::before { content: "✓"; color: var(--brand); margin-right: 8px; }
+  .steps b { color: var(--ink); font-weight: 500; }
+  .outputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .out { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .out .k { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .out .v { color: var(--ink); font-weight: 600; font-size: 14px; }
+  .out .v small { display: block; font-weight: 400; color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+
+  /* Tax grid */
+  .tax { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .tax-card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
+  .tax-card .icon { width: 40px; height: 40px; border-radius: 10px; background: var(--brand-soft); display: grid; place-items: center; margin-bottom: 18px; }
+  .tax-card h3 { font-size: 17px; margin-bottom: 8px; }
+  .tax-card p { font-size: 15px; color: var(--muted); }
+  .tax-card .quote { margin-top: 14px; font-size: 13px; font-style: italic; color: var(--text); border-left: 2px solid var(--line); padding-left: 10px; }
+  .tax-foot { margin-top: 36px; font-size: 19px; color: var(--ink); font-weight: 500; }
+
+  /* Pillars */
+  .pillar { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: center; padding: 56px 0; border-top: 1px solid var(--line); }
+  .pillar:nth-child(2) { border-top: 0; padding-top: 0; }
+  .pillar:nth-child(odd) .pillar-text { order: 2; }
+  .vis .feed-row { grid-template-columns: 1fr auto; row-gap: 2px; }
+  .vis .feed-row .src { grid-column: 1 / -1; }
+  .pillar-num { font-family: var(--mono); font-size: 13px; color: var(--brand); margin-bottom: 10px; }
+  .pillar h3 { font-size: 28px; margin-bottom: 14px; }
+  .pillar p { color: var(--muted); font-size: 17px; }
+  .checks { list-style: none; margin-top: 20px; display: grid; gap: 10px; }
+  .checks li { padding-left: 28px; position: relative; font-size: 15.5px; }
+  .checks li::before { content: ""; position: absolute; left: 0; top: 4px; width: 16px; height: 16px; border-radius: 50%; background: var(--brand-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.2 2.2 4.8-4.8' fill='none' stroke='%230F766E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat; }
+
+  .feed { display: grid; gap: 8px; }
+  .feed-row { display: grid; grid-template-columns: 92px 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 13.5px; }
+  .feed-row .src { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .feed-row .t { color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .term { background: #0B1220; color: #CBD5E1; font-family: var(--mono); font-size: 12.5px; line-height: 1.75; padding: 18px 20px; }
+  .term .c { color: #64748B; }
+  .term .g { color: #5EEAD4; }
+  .term .y { color: #FCD34D; }
+
+  .sbs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
+  .pane { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .pane-head { font-size: 12px; padding: 8px 12px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+  .pane-body { padding: 14px 12px; display: grid; gap: 8px; min-height: 150px; }
+  .fake-line { height: 9px; border-radius: 5px; background: var(--line); }
+  .fake-btn { height: 28px; border-radius: 7px; width: 55%; }
+  .pane.base .fake-btn { background: #FECACA; }
+  .pane.fix .fake-btn { background: #99F6E4; }
+  .pane .note { font-size: 12px; margin-top: 4px; }
+  .pane.base .note { color: var(--red); }
+  .pane.fix .note { color: var(--brand-dark); }
+  .pr-foot { border-top: 1px solid var(--line); padding: 12px 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--muted); }
+
+  .mem { display: grid; gap: 10px; }
+  .mem-card { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .mem-card .k { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .mem-card p { color: var(--ink); font-size: 14px; }
+
+  /* Watch */
+  .watch-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .watch-card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; }
+  .watch-card .vis { padding: 20px; border-bottom: 1px solid var(--line); background: var(--bg-soft); min-height: 168px; }
+  .watch-card .txt { padding: 22px; }
+  .watch-card h3 { font-size: 18px; margin-bottom: 8px; }
+  .watch-card p { font-size: 15px; color: var(--muted); }
+  .spark-label { font-family: var(--mono); font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; margin-bottom: 10px; }
+  .alert-line { margin-top: 10px; font-size: 12.5px; color: var(--red); font-weight: 500; }
+
+  /* Requests */
+  .req-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  .qa { display: grid; gap: 12px; }
+  .bubble { padding: 14px 16px; border-radius: 12px; font-size: 15px; }
+  .bubble.q { background: var(--bg-soft); border: 1px solid var(--line); color: var(--ink); justify-self: start; max-width: 88%; }
+  .bubble.a { background: var(--brand-soft); border: 1px solid #B7E0DA; color: var(--ink); justify-self: end; max-width: 92%; }
+  .bubble .src-ref { display: block; margin-top: 8px; font-family: var(--mono); font-size: 12px; color: var(--brand-dark); }
+  .bubble .who { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .agents { margin-top: 28px; padding: 22px; border: 1px dashed #B7E0DA; border-radius: var(--radius); background: #fff; }
+  .agents h4 { font-size: 16px; margin-bottom: 6px; }
+  .agents p { font-size: 15px; color: var(--muted); }
+  .agent-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+
+  /* Briefing */
+  .brief-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 56px; align-items: center; }
+  .brief h4 { font-size: 13px; font-family: var(--mono); color: var(--brand); text-transform: uppercase; letter-spacing: .06em; margin: 14px 0 8px; }
+  .brief h4:first-child { margin-top: 0; }
+  .brief p, .brief li { font-size: 14px; color: var(--ink); }
+  .brief ul { list-style: none; display: grid; gap: 6px; }
+  .brief li { padding-left: 16px; position: relative; }
+  .brief li::before { content: "›"; position: absolute; left: 2px; color: var(--brand); font-weight: 700; }
+  .surfaces { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 28px; }
+  .surface { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; background: #fff; }
+  .surface b { color: var(--ink); display: block; font-size: 15px; }
+  .surface span { font-size: 14px; color: var(--muted); }
+
+  /* Integrations */
+  .int-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .int-cat { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+  .int-cat h3 { font-size: 15px; margin-bottom: 4px; }
+  .int-cat p { font-size: 13.5px; color: var(--muted); margin-bottom: 14px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font-size: 13px; padding: 5px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg-soft); color: var(--ink); }
+  .int-foot { margin-top: 28px; display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; padding: 22px 26px; border-radius: var(--radius); background: var(--brand-soft); color: var(--brand-dark); }
+  .int-foot b { color: var(--ink); }
+
+  /* Trust */
+  .trust-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .trust-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; background: #fff; }
+  .trust-card h3 { font-size: 17px; margin-bottom: 8px; }
+  .trust-card p { font-size: 15px; color: var(--muted); }
+  .arch { margin-top: 32px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center; padding: 28px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--bg-soft); }
+  .arch-box { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+  .arch-box .k { font-family: var(--mono); font-size: 12px; color: var(--brand); text-transform: uppercase; letter-spacing: .06em; }
+  .arch-box b { display: block; color: var(--ink); margin: 4px 0; }
+  .arch-box span { font-size: 14px; color: var(--muted); }
+  .arch-arrow { font-family: var(--mono); font-size: 12px; color: var(--muted); text-align: center; }
+
+  /* Proof */
+  .proof { display: grid; grid-template-columns: 1.2fr 1fr; gap: 56px; align-items: center; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .stat { border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; background: #fff; }
+  .stat .n { font-size: 34px; font-weight: 700; color: var(--ink); letter-spacing: -0.03em; }
+  .stat .l { font-size: 14px; color: var(--muted); }
+  blockquote { font-size: 22px; line-height: 1.45; color: var(--ink); font-weight: 500; letter-spacing: -0.01em; }
+  blockquote + .cite { margin-top: 16px; font-size: 14px; color: var(--muted); }
+
+  /* FAQ */
+  .faq { max-width: 820px; }
+  details { border-bottom: 1px solid var(--line); padding: 20px 0; }
+  summary { cursor: pointer; list-style: none; font-weight: 600; color: var(--ink); font-size: 17px; display: flex; justify-content: space-between; gap: 16px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--muted); font-weight: 400; font-size: 22px; line-height: 1; }
+  details[open] summary::after { content: "−"; }
+  details p { margin-top: 12px; color: var(--muted); font-size: 16px; }
+
+  /* Founder */
+  .founder { display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: start; max-width: 860px; }
+  .avatar { width: 88px; height: 88px; border-radius: 50%; background: var(--brand-soft); display: grid; place-items: center; font-size: 30px; font-weight: 700; color: var(--brand); }
+  .founder h3 { font-size: 22px; }
+  .founder .role { color: var(--muted); font-size: 15px; margin: 4px 0 14px; }
+  .founder p { font-size: 16.5px; }
+  .founder .links { margin-top: 16px; display: flex; gap: 18px; }
+  .founder .links a { color: var(--brand); font-weight: 600; text-decoration: none; font-size: 15px; }
+
+  /* CTA */
+  .cta { text-align: center; background: var(--ink); color: #CBD5E1; }
+  .cta h2 { color: #fff; }
+  .cta .lead { margin: 18px auto 34px; color: #94A3B8; }
+  .cta .btn-ghost { background: transparent; color: #fff; border-color: #334155; }
+  .cta .hero-ctas { justify-content: center; }
+
+  footer { padding: 36px 0; font-size: 14px; color: var(--muted); }
+  footer .container { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  footer a { text-decoration: none; margin-left: 20px; }
+
+  @media (max-width: 960px) {
+    .hero-grid, .pillar, .req-grid, .brief-grid, .proof { grid-template-columns: 1fr; gap: 40px; }
+    .pillar:nth-child(odd) .pillar-text { order: 0; }
+    .tax { grid-template-columns: 1fr 1fr; }
+    .watch-grid, .int-grid, .trust-grid { grid-template-columns: 1fr; }
+    .arch { grid-template-columns: 1fr; }
+    .arch-arrow { transform: rotate(90deg); }
+    section { padding: 72px 0; }
   }
-  nav .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .logo {
-    font-family: var(--mono);
-    font-size: 18px;
-    color: var(--green);
-    font-weight: 700;
-  }
-  .logo span { color: var(--text-dim); }
-  nav a {
-    color: var(--text-dim);
-    text-decoration: none;
-    font-family: var(--mono);
-    font-size: 14px;
-    margin-left: 24px;
-    transition: color 0.2s;
-  }
-  nav a:hover { color: var(--green); }
-  .nav-links { display: flex; align-items: center; }
-  .hamburger {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-  }
-  .hamburger svg { display: block; }
-  @media (max-width: 768px) {
-    .hamburger { display: block; }
-    .nav-links {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-      flex-direction: column;
-      padding: 16px 24px;
-      gap: 12px;
-      z-index: 100;
-    }
+  @media (max-width: 760px) {
+    .menu-toggle { display: block; background: none; border: 0; cursor: pointer; padding: 6px; }
+    .nav-links { display: none; position: absolute; top: 68px; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; background: #fff; border-bottom: 1px solid var(--line); padding: 8px 24px 20px; }
     .nav-links.open { display: flex; }
-    .nav-links a { margin-left: 0; }
-    nav .container { position: relative; }
-  }
-
-  /* ---- HERO ---- */
-  .hero {
-    padding: 100px 0 80px;
-    text-align: center;
-  }
-  .ascii-art {
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--green);
-    line-height: 1.2;
-    margin-bottom: 40px;
-    opacity: 0.6;
-    white-space: pre;
-    display: inline-block;
-    text-align: left;
-    text-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
-  }
-  .hero h1 {
-    font-family: var(--sans);
-    font-size: 48px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 16px;
-    letter-spacing: -1px;
-    line-height: 1.1;
-  }
-  .hero .sub {
-    font-family: var(--mono);
-    font-size: 18px;
-    color: var(--green);
-    margin-bottom: 48px;
-  }
-  .terminal-demo {
-    background: var(--bg-light);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px 32px;
-    text-align: left;
-    font-family: var(--mono);
-    font-size: 14px;
-    max-width: 640px;
-    margin: 0 auto;
-    position: relative;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 255, 65, 0.05);
-  }
-  .terminal-demo::before {
-    content: '$ ';
-    color: var(--green);
-  }
-  .terminal-demo .cmd {
-    color: #fff;
-  }
-  .terminal-demo .cursor {
-    display: inline-block;
-    width: 8px;
-    height: 16px;
-    background: var(--green);
-    animation: blink 1s step-end infinite;
-    vertical-align: text-bottom;
-    margin-left: 2px;
-  }
-  @keyframes blink {
-    50% { opacity: 0; }
-  }
-  .terminal-dots {
-    position: absolute;
-    top: 10px;
-    left: 14px;
-    display: flex;
-    gap: 6px;
-  }
-  .terminal-dots span {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    display: block;
-  }
-  .terminal-dots .r { background: #ff5f56; }
-  .terminal-dots .y { background: #ffbd2e; }
-  .terminal-dots .g { background: #27c93f; }
-  .terminal-with-dots {
-    padding-top: 40px;
-  }
-  .terminal-with-dots::before {
-    display: none;
-  }
-  .terminal-output {
-    color: var(--text-dim);
-    margin-top: 8px;
-    line-height: 1.8;
-  }
-  .terminal-output .highlight { color: var(--green); }
-  .terminal-output .amber { color: var(--amber); }
-  .terminal-output .white { color: #fff; }
-
-  /* ---- STORY ---- */
-  .story {
-    padding: 80px 0;
-    border-top: 1px solid var(--border);
-  }
-  .story blockquote {
-    font-size: 20px;
-    color: var(--text);
-    line-height: 1.7;
-    border-left: 3px solid var(--amber);
-    padding-left: 24px;
-    max-width: 700px;
-    margin: 0 auto;
-    font-style: italic;
-  }
-  .story .attribution {
-    text-align: center;
-    margin-top: 20px;
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--text-dim);
-  }
-
-  /* ---- SCREENSHOTS ---- */
-  .screenshots {
-    padding: 80px 0;
-    border-top: 1px solid var(--border);
-  }
-  .screenshots h2 {
-    text-align: center;
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--green);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    margin-bottom: 48px;
-  }
-  .screenshot-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 48px;
-  }
-  .screenshot-item {
-    position: relative;
-  }
-  .screenshot-item .label {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--amber);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .screenshot-item .label::before {
-    content: '>';
-    color: var(--green);
-  }
-  .crt-frame {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 32px rgba(0, 255, 65, 0.06), 0 0 0 1px rgba(0, 255, 65, 0.05);
-    transition: box-shadow 0.3s;
-  }
-  .crt-frame:hover {
-    box-shadow: 0 4px 48px rgba(0, 255, 65, 0.12), 0 0 0 1px rgba(0, 255, 65, 0.1);
-    cursor: zoom-in;
-  }
-
-  /* Lightbox */
-  .lightbox {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.92);
-    z-index: 10000;
-    justify-content: center;
-    align-items: center;
-    cursor: zoom-out;
-    padding: 32px;
-  }
-  .lightbox.active {
-    display: flex;
-  }
-  .lightbox img {
-    max-width: 90vw;
-    max-height: 90vh;
-    border-radius: 8px;
-    box-shadow: 0 0 60px rgba(0, 255, 65, 0.1);
-  }
-  .crt-frame img {
-    width: 100%;
-    border-radius: 4px;
-    display: block;
-  }
-  .crt-frame::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(0, 255, 65, 0.01) 0%,
-      transparent 50%,
-      rgba(0, 255, 65, 0.01) 100%
-    );
-    pointer-events: none;
-    border-radius: 8px;
-  }
-  .screenshot-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-
-  /* ---- FEATURES ---- */
-  .features {
-    padding: 80px 0;
-    border-top: 1px solid var(--border);
-  }
-  .features h2 {
-    text-align: center;
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--green);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    margin-bottom: 48px;
-  }
-  .feature-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-  .feature {
-    display: grid;
-    grid-template-columns: 160px 1fr;
-    gap: 16px;
-    padding: 20px 0;
-  }
-  .feature + .feature {
-    border-top: 1px solid var(--border);
-  }
-  .feature .flag {
-    font-family: var(--mono);
-    font-size: 15px;
-    color: var(--amber);
-    font-weight: 700;
-  }
-  .feature .desc {
-    font-size: 15px;
-    color: var(--text-dim);
-    line-height: 1.6;
-  }
-  .feature-group-title {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--green);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    padding: 24px 0 4px;
-    margin: 0;
-  }
-  .feature-group-title:first-child {
-    padding-top: 0;
-  }
-
-  /* ---- INTEGRATIONS ---- */
-  .integrations {
-    padding: 80px 0;
-    border-top: 1px solid var(--border);
-  }
-  .integrations h2 {
-    text-align: center;
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--green);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    margin-bottom: 16px;
-  }
-  .integrations-sub {
-    text-align: center;
-    color: var(--text-dim);
-    font-size: 15px;
-    margin-bottom: 48px;
-  }
-  .integrations-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-  .integration-card {
-    background: var(--bg-light);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px 16px;
-    text-align: center;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .integration-card:hover {
-    border-color: var(--green-dim);
-    box-shadow: 0 0 16px rgba(0, 255, 65, 0.06);
-  }
-  .integration-icon {
-    font-size: 32px;
-    margin-bottom: 12px;
-    line-height: 1;
-  }
-  .integration-icon svg {
-    width: 32px;
-    height: 32px;
-  }
-  .integration-name {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: #fff;
-    font-weight: 600;
-  }
-  .integration-type {
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 4px;
-  }
-  @media (max-width: 768px) {
-    .integrations-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  /* ---- HOW IT WORKS ---- */
-  .how {
-    padding: 80px 0;
-    border-top: 1px solid var(--border);
-  }
-  .how h2 {
-    text-align: center;
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--green);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    margin-bottom: 48px;
-  }
-  .steps {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 32px;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-  .step {
-    text-align: center;
-  }
-  .step .num {
-    font-family: var(--mono);
-    font-size: 36px;
-    color: var(--green);
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-  .step .title {
-    font-family: var(--mono);
-    font-size: 15px;
-    color: #fff;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-  .step .detail {
-    font-size: 14px;
-    color: var(--text-dim);
-  }
-  .step-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--green-dim);
-    font-family: var(--mono);
-    font-size: 24px;
-  }
-
-  /* ---- STACK ---- */
-  .stack {
-    padding: 80px 0;
-    border-top: 1px solid var(--border);
-    text-align: center;
-  }
-  .stack h2 {
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--green);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    margin-bottom: 24px;
-  }
-  .stack-line {
-    font-family: var(--mono);
-    font-size: 16px;
-    color: var(--text);
-    margin-bottom: 8px;
-  }
-  .stack-sub {
-    font-family: var(--sans);
-    font-size: 15px;
-    color: var(--text-dim);
-    margin-top: 12px;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.6;
-  }
-
-  /* ---- NUMBERS ---- */
-  .numbers {
-    padding: 80px 0;
-    border-top: 1px solid var(--border);
-  }
-  .numbers-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 32px;
-    text-align: center;
-  }
-  .number-item .value {
-    font-family: var(--mono);
-    font-size: 42px;
-    font-weight: 700;
-    color: var(--green);
-    margin-bottom: 8px;
-  }
-  .number-item .label {
-    font-size: 14px;
-    color: var(--text-dim);
-  }
-
-  /* ---- CTA ---- */
-  .cta {
-    padding: 80px 0;
-    border-top: 1px solid var(--border);
-    text-align: center;
-  }
-  .cta h2 {
-    font-size: 32px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 12px;
-  }
-  .cta p {
-    color: var(--text-dim);
-    font-size: 16px;
-    margin-bottom: 32px;
-  }
-  .cta-button {
-    display: inline-block;
-    background: var(--amber);
-    color: #000;
-    font-family: var(--mono);
-    font-size: 15px;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: background 0.2s, transform 0.2s;
-  }
-  .cta-button:hover {
-    background: #ff8533;
-    transform: translateY(-1px);
-  }
-  .cta-or {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--text-dim);
-    margin: 16px 0;
-  }
-  .cta-terminal {
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--green);
-    background: var(--bg-light);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 12px 24px;
-    display: inline-block;
-  }
-
-  /* ---- OPEN SOURCE / PRICING ---- */
-  .opensource {
-    padding: 80px 0;
-    border-top: 1px solid var(--border);
-    text-align: center;
-  }
-  .opensource h2 {
-    font-family: var(--sans);
-    font-size: 28px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 12px;
-  }
-  .opensource-intro {
-    color: var(--text-dim);
-    font-size: 16px;
-    margin-bottom: 40px;
-  }
-  .pricing-single {
-    max-width: 520px;
-    margin: 0 auto;
-  }
-  .pricing-card {
-    background: var(--bg-light);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 36px 32px;
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .pricing-card.featured {
-    border-color: var(--green-dim);
-    box-shadow: 0 0 24px rgba(0, 255, 65, 0.08);
-  }
-  .pricing-title {
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--amber);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 20px;
-  }
-  .pricing-desc {
-    width: 100%;
-  }
-  .pricing-desc ul {
-    list-style: none;
-    padding: 0;
-  }
-  .pricing-desc li {
-    font-size: 15px;
-    color: var(--text-dim);
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .pricing-desc li::before {
-    content: '> ';
-    color: var(--green-dim);
-    font-family: var(--mono);
-  }
-  .pricing-desc li:last-child {
-    border-bottom: none;
-  }
-  .pricing-divider {
-    width: 100%;
-    height: 1px;
-    background: var(--border);
-    margin: 20px 0;
-  }
-  .pricing-optional {
-    font-size: 14px;
-    color: var(--text-dim);
-    text-align: center;
-    line-height: 1.6;
-  }
-  .pricing-optional-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--green);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    display: block;
-    margin-bottom: 6px;
-  }
-
-  /* ---- BUILT BY ---- */
-  .builtby {
-    padding: 80px 0;
-    border-top: 1px solid var(--border);
-  }
-  .builtby h2 {
-    text-align: center;
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--green);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    margin-bottom: 32px;
-  }
-  .builtby-card {
-    max-width: 520px;
-    margin: 0 auto;
-    text-align: center;
-  }
-  .builtby-name {
-    font-family: var(--sans);
-    font-size: 20px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 4px;
-  }
-  .builtby-role {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--green-dim);
-    margin-bottom: 16px;
-  }
-  .builtby-text {
-    font-size: 16px;
-    color: var(--text-dim);
-    line-height: 1.7;
-    margin-bottom: 16px;
-  }
-  .builtby-link {
-    font-family: var(--mono);
-    font-size: 15px;
-    color: var(--amber);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .builtby-link:hover {
-    color: #ff8533;
-  }
-
-  /* ---- FOOTER ---- */
-  footer {
-    padding: 40px 0;
-    border-top: 1px solid var(--border);
-    text-align: center;
-  }
-  footer p {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--text-dim);
-  }
-  footer p a {
-    color: var(--green-dim);
-    text-decoration: none;
-  }
-  footer .tagline {
-    margin-top: 8px;
-    color: var(--text-dim);
-    font-style: italic;
-    font-family: var(--sans);
-    font-size: 13px;
-  }
-
-  /* ---- RESPONSIVE ---- */
-  @media (max-width: 768px) {
-    .hero h1 { font-size: 32px; }
-    .hero .sub { font-size: 15px; }
-    .ascii-art { font-size: 7px; }
-    .screenshot-row { grid-template-columns: 1fr; }
-    .steps { grid-template-columns: 1fr; gap: 24px; }
-    .numbers-grid { grid-template-columns: 1fr; gap: 24px; }
-    .feature { grid-template-columns: 1fr; gap: 4px; }
-    .terminal-demo { font-size: 12px; padding: 16px 20px; }
+    .nav-links a { padding: 12px 0; }
+    .nav-links .btn { justify-content: center; margin-top: 8px; }
+    .tax, .outputs, .sbs, .stats, .surfaces { grid-template-columns: 1fr; }
+    .feed-row { grid-template-columns: 1fr auto; }
+    .feed-row .src { grid-column: 1 / -1; }
+    .founder { grid-template-columns: 1fr; }
+    footer a { margin: 0 20px 0 0; }
   }
 </style>
 </head>
 <body>
 
-<!-- Nav -->
 <nav>
   <div class="container">
-    <div class="logo">deflekt<span>.dev</span></div>
-    <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <a href="/" class="logo" aria-label="Deflekt home">
+      <svg viewBox="0 0 157 166" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g transform="translate(0,166) scale(0.1,-0.1)" fill="#0F766E"><path d="M193 1452 c-53 -3 -65 -7 -83 -29 -20 -25 -20 -37 -20 -609 l0 -583 24 -28 c24 -28 25 -28 140 -26 186 2 296 47 435 177 146 135 461 450 461 461 0 18 -493 493 -560 540 -111 77 -228 105 -397 97z m240 -263 c57 -30 145 -116 172 -169 51 -101 66 -203 44 -299 -35 -154 -174 -293 -306 -309 l-43 -5 0 405 c0 223 2 407 5 410 9 9 83 -11 128 -33z"/><path d="M710 1457 c0 -2 142 -145 315 -317 173 -173 315 -321 315 -330 0 -8 -139 -153 -310 -323 -170 -169 -310 -309 -310 -312 0 -3 60 -5 133 -5 l132 0 243 238 c185 181 243 243 243 262 1 14 2 87 2 163 l1 138 -245 245 -245 244 -137 0 c-75 0 -137 -2 -137 -3z"/></g></svg>
+      <span>deflekt</span>
+    </a>
+    <button class="menu-toggle" aria-label="Menu" aria-expanded="false" onclick="this.setAttribute('aria-expanded', document.querySelector('.nav-links').classList.toggle('open'))">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div class="nav-links">
-      <a href="#features">Features</a>
+      <a href="#product">Product</a>
+      <a href="#watch">Watch</a>
       <a href="#integrations">Integrations</a>
-      <a href="#how">How it works</a>
-      <a href="#demo">Demo</a>
-      <a href="#pricing">Pricing</a>
-      <a href="https://app.deflekt.dev" target="_blank" style="color: var(--green); border: 1px solid var(--green); border-radius: 4px; padding: 4px 12px;">Log in</a>
+      <a href="#security">Security</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://app.deflekt.dev">Log in</a>
+      <a href="mailto:hello@deflekt.dev?subject=Deflekt%20demo" class="btn btn-primary">Book a demo</a>
     </div>
   </div>
 </nav>
 
-<!-- Hero -->
-<section class="hero">
-  <div class="container">
-    <div class="ascii-art">██████╗ ███████╗███████╗██╗     ███████╗██╗  ██╗████████╗
-██╔══██╗██╔════╝██╔════╝██║     ██╔════╝██║ ██╔╝╚══██╔══╝
-██║  ██║█████╗  █████╗  ██║     █████╗  █████╔╝    ██║
-██║  ██║██╔══╝  ██╔══╝  ██║     ██╔══╝  ██╔═██╗    ██║
-██████╔╝███████╗██║     ███████╗███████╗██║  ██╗   ██║
-╚═════╝ ╚══════╝╚═╝     ╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝</div>
-    <h1>Developers should never<br>do support.</h1>
-    <p class="sub">60 tickets. One command. Zero context switching.</p>
-
-    <div class="terminal-demo terminal-with-dots">
-      <div class="terminal-dots">
-        <span class="r"></span>
-        <span class="y"></span>
-        <span class="g"></span>
+<header class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow">The AI maintenance engineer</div>
+      <h1>Every request your product gets, <em>investigated and answered.</em></h1>
+      <p class="lead">Deflekt listens to your customers, your errors and your own data. It investigates in your code and in production, then hands your team the answer: a reply, a console command, or a fix tested side by side and ready to merge.</p>
+      <div class="hero-ctas">
+        <a href="mailto:hello@deflekt.dev?subject=Deflekt%20demo" class="btn btn-primary">Book a 20 min demo</a>
+        <a href="#product" class="btn btn-ghost">See how it works</a>
       </div>
+      <p class="trust-line">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#0F766E" stroke-width="1.6"><path d="M8 1.5l5.5 2v4c0 3.3-2.3 6-5.5 7-3.2-1-5.5-3.7-5.5-7v-4z"/><path d="M5.6 8l1.7 1.7 3.2-3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Deflekt never acts on production alone. Every reply, command and fix waits for a human to approve it.
+      </p>
+    </div>
+
+    <div class="mock" aria-label="Example: a customer ticket investigated by Deflekt">
+      <div class="mock-bar"><b>Ticket #4821</b> · Freshdesk · Dutch <span style="margin-left:auto" class="tag urgent">Urgent</span></div>
+      <div class="mock-body flow">
+        <div class="msg">
+          <div class="who"><span>Anna, Brightline Logistics</span><span>08:42</span></div>
+          <p>"Onze facturen van maart zijn verdwenen uit het overzicht. Onze boekhouder wacht erop."</p>
+        </div>
+        <ul class="steps">
+          <li>Read <b>14 past tickets</b> from this customer</li>
+          <li>Queried production: <b>212 invoices</b> hidden by a filter</li>
+          <li>Traced it to <b>InvoiceFilter#visible</b>, changed 3 days ago</li>
+          <li>Same root cause as <b>5 other open tickets</b></li>
+        </ul>
+        <div class="outputs">
+          <div class="out"><div class="k">Reply drafted</div><div class="v">Dutch, your tone<small>Ready for review</small></div></div>
+          <div class="out"><div class="k">Fix proposed</div><div class="v">PR #1847 · 12 lines<small>Tested, QA recorded</small></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="soft" id="tax">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">The maintenance tax</div>
+      <h2>Shipping is half the job.<br>The other half lands in your inbox.</h2>
+      <p class="lead">Most software cost is spent after the code ships. It arrives from four directions, and today all of it ends up on a developer's desk.</p>
+    </div>
+    <div class="tax">
+      <div class="tax-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <h3>Customer tickets</h3>
+        <p>In every language, with screenshots, often about something that broke for one account only.</p>
+        <p class="quote">"The export is empty again."</p>
+      </div>
+      <div class="tax-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2" stroke-linecap="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg></div>
+        <h3>Errors and alerts</h3>
+        <p>Stack traces with no customer attached, piling up until someone finds the time to look.</p>
+        <p class="quote">"NoMethodError, 340 events."</p>
+      </div>
+      <div class="tax-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg></div>
+        <h3>Silent data bugs</h3>
+        <p>A feature stops writing, a column goes empty. No error, no ticket, until a customer notices weeks later.</p>
+        <p class="quote">Nobody reports what nobody sees.</p>
+      </div>
+      <div class="tax-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12" y2="17"/></svg></div>
+        <h3>Questions and requests</h3>
+        <p>Sales, support and ops asking how the product behaves, or for a small change, in a Slack thread.</p>
+        <p class="quote">"Do we already send a reminder before the due date?"</p>
+      </div>
+    </div>
+    <p class="tax-foot">Each one costs a developer an hour of context switching. Deflekt takes the hour.</p>
+  </div>
+</section>
+
+<section id="product">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">How it works</div>
+      <h2>Listen. Investigate. Act. Prove. Remember.</h2>
+      <p class="lead">Deflekt works like a senior engineer who knows your product, your data and your customers, and never gets tired of the queue.</p>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-text">
+        <div class="pillar-num">01 · Listen</div>
+        <h3>Every signal, one queue.</h3>
+        <p>Tickets, issues, errors and questions arrive as they happen, through webhooks or a click in your browser. Duplicates are grouped, so twelve reports of one bug become one investigation.</p>
+        <ul class="checks">
+          <li>Help desks, issue trackers, error monitoring</li>
+          <li>Browser extension: open Deflekt from any ticket, issue or pull request</li>
+          <li>Manual requests with attachments, from anyone on the team</li>
+        </ul>
+      </div>
+      <div class="mock">
+        <div class="mock-bar"><b>Incoming</b> · last hour</div>
+        <div class="mock-body feed">
+          <div class="feed-row"><span class="src">Zendesk</span><span class="t">Export CSV vide depuis hier</span><span class="tag">FR</span></div>
+          <div class="feed-row"><span class="src">Sentry</span><span class="t">NoMethodError in ExportJob#perform</span><span class="tag warn">340 events</span></div>
+          <div class="feed-row"><span class="src">Jira</span><span class="t">Customer reports empty exports</span><span class="tag">Grouped</span></div>
+          <div class="feed-row"><span class="src">Slack</span><span class="t">Can we add the VAT number to the export?</span><span class="tag brand">Request</span></div>
+          <div class="feed-row"><span class="src">Data Watch</span><span class="t">exports.rows_written dropped to 0</span><span class="tag urgent">Anomaly</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-text">
+        <div class="pillar-num">02 · Investigate</div>
+        <h3>Reads the code. Checks the data.</h3>
+        <p>Deflekt does what your best engineer would do before answering: search the codebase, query production read only, look at recent pull requests, the error tracker and the customer's whole history. Then it sets a priority from evidence, not from who shouted loudest.</p>
+        <ul class="checks">
+          <li>Read only access to your databases, payments and email logs</li>
+          <li>Attachments understood: screenshots, PDFs, CSVs, logs</li>
+          <li>Priority from impact: data loss, money, blocked customers first</li>
+        </ul>
+      </div>
+      <div class="mock">
+        <div class="mock-bar"><b>Investigation</b> · Ticket #4821</div>
+        <div class="term">
+          <div><span class="c"># customer context</span></div>
+          <div>account <span class="g">Brightline Logistics</span> · 14 tickets · plan Pro</div>
+          <div><span class="c"># production, read only</span></div>
+          <div>SELECT count(*) FROM invoices WHERE hidden_at IS NOT NULL</div>
+          <div><span class="y">→ 212 rows since Oct 28</span></div>
+          <div><span class="c"># code and history</span></div>
+          <div>app/models/invoice_filter.rb:41 changed in <span class="g">PR #1839</span></div>
+          <div><span class="c"># verdict</span></div>
+          <div>Bug · <span class="y">Urgent</span> · customer blocked, no workaround</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-text">
+        <div class="pillar-num">03 · Act</div>
+        <h3>The right answer, in the right form.</h3>
+        <p>Not every ticket needs a fix. Deflekt chooses what does the job: a reply in the customer's language and your tone, an internal note, a precise console command, or a pull request, across every repository the fix touches.</p>
+        <ul class="checks">
+          <li>Replies in any language, written the way your team writes</li>
+          <li>Ready to run console commands for one account issues</li>
+          <li>Fixes across backend, frontend and mobile repositories</li>
+        </ul>
+      </div>
+      <div class="mock">
+        <div class="mock-bar"><b>Suggested reply</b> · Dutch <span style="margin-left:auto" class="tag ok">High confidence</span></div>
+        <div class="mock-body flow">
+          <div class="msg">
+            <p>Dag Anna,<br><br>Uw facturen van maart zijn niet verloren: een filter verbergt ze sinds maandag. We hebben de oorzaak gevonden en een correctie staat klaar. U ontvangt bericht zodra ze weer zichtbaar zijn.</p>
+          </div>
+          <div class="outputs">
+            <div class="out"><div class="k">Also prepared</div><div class="v">Internal note<small>For your support team</small></div></div>
+            <div class="out"><div class="k">Also prepared</div><div class="v">Fix in 2 repos<small>api, web</small></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-text">
+        <div class="pillar-num">04 · Prove</div>
+        <h3>A fix you can trust before you read it.</h3>
+        <p>Generating a fix is the easy part now. Deflekt spins up two environments with the same data, one with the bug and one with the fix, and records both in a real browser. The recording plays inside the pull request. Reviewer comments and failing CI are handled in further rounds.</p>
+        <ul class="checks">
+          <li>Side by side QA environments, recorded</li>
+          <li>Your test suite runs before anyone is asked to review</li>
+          <li>Review comments and CI failures addressed automatically</li>
+        </ul>
+      </div>
+      <div class="mock">
+        <div class="mock-bar"><b>PR #1847</b> · Show invoices hidden by the archive filter</div>
+        <div class="sbs">
+          <div class="pane base">
+            <div class="pane-head"><span>Before</span><span class="tag urgent">Bug</span></div>
+            <div class="pane-body">
+              <div class="fake-line" style="width:70%"></div>
+              <div class="fake-line" style="width:40%"></div>
+              <div class="fake-btn"></div>
+              <div class="note">0 invoices in March</div>
+            </div>
+          </div>
+          <div class="pane fix">
+            <div class="pane-head"><span>After</span><span class="tag ok">Fixed</span></div>
+            <div class="pane-body">
+              <div class="fake-line" style="width:70%"></div>
+              <div class="fake-line" style="width:40%"></div>
+              <div class="fake-btn"></div>
+              <div class="note">212 invoices in March</div>
+            </div>
+          </div>
+        </div>
+        <div class="pr-foot"><span class="tag ok">Tests passing</span><span class="tag brand">QA recording</span><span class="tag">2 review rounds</span></div>
+      </div>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-text">
+        <div class="pillar-num">05 · Remember</div>
+        <h3>The knowledge stays when people leave.</h3>
+        <p>Every investigation becomes context for the next one. Deflekt learns why that workaround exists in the billing code, who each customer is, and which answers your team corrected. It knows when to look again, and closes tickets once the customer has gone quiet.</p>
+        <ul class="checks">
+          <li>Product memory built from every resolved case</li>
+          <li>A file per customer and contact, kept up to date</li>
+          <li>Follow ups with a date and a reason, not a fixed timer</li>
+        </ul>
+      </div>
+      <div class="mock">
+        <div class="mock-bar"><b>Memory</b> · Billing</div>
+        <div class="mock-body mem">
+          <div class="mem-card"><div class="k"><span>Learned from #3920</span><span class="tag">Code</span></div><p>Credit notes sent to the Peppol network cannot be deleted. Create an offsetting record instead.</p></div>
+          <div class="mem-card"><div class="k"><span>Customer file</span><span class="tag">People</span></div><p>Brightline Logistics: accountant receives invoices monthly, prefers Dutch, 2 open tickets.</p></div>
+          <div class="mem-card"><div class="k"><span>Follow up</span><span class="tag warn">Nov 3</span></div><p>Registration on the network should have propagated by then. Check and close.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="soft" id="watch">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Watch</div>
+      <h2>Catches what nobody reports.</h2>
+      <p class="lead">The worst problems never reach your help desk. Deflekt watches for them and turns them into investigations before a customer has to.</p>
+    </div>
+    <div class="watch-grid">
+      <div class="watch-card">
+        <div class="vis">
+          <div class="spark-label"><span>exports.rows_written / day</span><span>30 days</span></div>
+          <svg viewBox="0 0 300 80" width="100%" height="80" aria-hidden="true"><polyline fill="none" stroke="#0F766E" stroke-width="2" points="0,40 20,36 40,42 60,34 80,38 100,30 120,36 140,32 160,38 180,30 200,34 220,28 240,33"/><polyline fill="none" stroke="#DC2626" stroke-width="2" points="240,33 260,76 280,77 300,77"/><circle cx="260" cy="76" r="4" fill="#DC2626"/></svg>
+          <div class="alert-line">Stopped writing 2 days ago · no error raised</div>
+        </div>
+        <div class="txt">
+          <h3>Data Watch</h3>
+          <p>Nightly probes of your own database. A feature that stops writing, a column that suddenly goes empty, a status nobody has seen before. The data shows the bug first.</p>
+        </div>
+      </div>
+      <div class="watch-card">
+        <div class="vis">
+          <div class="feed">
+            <div class="feed-row" style="background:#fff"><span class="src">Regulator</span><span class="t">Electronic invoicing mandatory for B2B from Jan 1</span><span class="tag urgent">Affects you</span></div>
+            <div class="feed-row" style="background:#fff"><span class="src">Stripe</span><span class="t">API version 2024 deprecated</span><span class="tag warn">Check</span></div>
+            <div class="feed-row" style="background:#fff"><span class="src">Bank API</span><span class="t">Changelog silent for 90 days</span><span class="tag">Stale feed</span></div>
+          </div>
+        </div>
+        <div class="txt">
+          <h3>Regulatory and partner watch</h3>
+          <p>The worst tickets were announced in public months before they arrived. Deflekt reads regulator feeds and partner changelogs in any language, judges each item against your product and learns from what you dismiss.</p>
+        </div>
+      </div>
+      <div class="watch-card">
+        <div class="vis">
+          <div class="feed">
+            <div class="feed-row" style="background:#fff"><span class="src">Sentry</span><span class="t">TimeoutError in BankSyncJob</span><span class="tag warn">Rising</span></div>
+            <div class="feed-row" style="background:#fff"><span class="src">Linked</span><span class="t">3 tickets mention missing transactions</span><span class="tag brand">Same cause</span></div>
+            <div class="feed-row" style="background:#fff"><span class="src">Deflekt</span><span class="t">Investigation opened, fix proposed</span><span class="tag ok">PR ready</span></div>
+          </div>
+        </div>
+        <div class="txt">
+          <h3>Errors with a story</h3>
+          <p>Errors are linked to the customers they hurt and the tickets they cause. An error trend becomes one investigation with a fix, instead of a dashboard nobody opens.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="requests">
+  <div class="container req-grid">
+    <div>
+      <div class="eyebrow">Any request, from anyone</div>
+      <h2>Your whole company can ask it.</h2>
+      <p class="lead" style="margin-top:16px">Sales, support and ops get answers from the code and the data, with the source cited, without interrupting an engineer. Feature requests are checked against what already exists, scoped in the code, and turned into a clear spec. Small ones come with a pull request.</p>
+      <div class="agents">
+        <h4>Works with the coding agents you already use</h4>
+        <p>Deflekt does not replace your IDE or your coding agent. It decides what is worth building, gives the agent the full context, and checks the result. Engineers can query Deflekt from their own tools over MCP.</p>
+        <div class="agent-chips"><span class="chip">Claude Code</span><span class="chip">Codex</span><span class="chip">Cursor</span><span class="chip">MCP server</span></div>
+      </div>
+    </div>
+    <div class="qa">
+      <div class="bubble q"><span class="who">Sarah, Sales</span>Do we already send a reminder before an invoice is due? A prospect is asking.</div>
+      <div class="bubble a"><span class="who">Deflekt</span>Yes, 3 days before the due date, but only when the customer enabled reminders in their settings. 41% of active accounts have it on.<span class="src-ref">app/jobs/due_date_reminder_job.rb:12 · settings.reminders_enabled</span></div>
+      <div class="bubble q"><span class="who">Tom, Support</span>Can customers get it 7 days before instead?</div>
+      <div class="bubble a"><span class="who">Deflekt</span>The delay is hardcoded. Making it a setting touches 3 files and one migration. Spec drafted and a pull request is ready for review.<span class="src-ref">Spec #212 · PR #1851</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="soft" id="briefing">
+  <div class="container brief-grid">
+    <div>
+      <div class="eyebrow">Daily briefing</div>
+      <h2>Start the day knowing what matters.</h2>
+      <p class="lead" style="margin-top:16px">Not a list of tickets. A briefing: patterns across the queue, what is ready to ship, what needs a decision, and the one thing to do first.</p>
+      <div class="surfaces">
+        <div class="surface"><b>Dashboard</b><span>Every case, its status and its proposed answer</span></div>
+        <div class="surface"><b>Browser extension</b><span>Deflekt's analysis next to the ticket you are reading</span></div>
+        <div class="surface"><b>Pull requests</b><span>Fixes, QA recordings and review rounds</span></div>
+        <div class="surface"><b>MCP</b><span>Ask Deflekt from your own AI tools</span></div>
+      </div>
+    </div>
+    <div class="mock">
+      <div class="mock-bar"><b>Briefing</b> · Monday, Nov 2</div>
+      <div class="mock-body brief">
+        <h4>In short</h4>
+        <p>9 of 31 open cases come from one cause: the archive filter shipped on Oct 28 hides recent invoices. The fix is tested and recorded. Merge PR #1847 first, then send the 9 drafted replies.</p>
+        <h4>Ready to ship</h4>
+        <ul>
+          <li>14 replies ready to send</li>
+          <li>3 fixes with passing tests and QA recordings</li>
+          <li>2 console commands to unblock single accounts</li>
+        </ul>
+        <h4>Needs a decision</h4>
+        <ul>
+          <li>Feature request asked by 4 customers: export with VAT number</li>
+          <li>Regulatory change on Jan 1 affects invoice numbering</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="integrations">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Integrations</div>
+      <h2>Plugs into the stack you already run.</h2>
+      <p class="lead">Deflekt reads where requests arrive, where your code lives and where your data sits.</p>
+    </div>
+    <div class="int-grid">
+      <div class="int-cat"><h3>Help desks and chat</h3><p>Where customers write</p><div class="chips"><span class="chip">Freshdesk</span><span class="chip">Zendesk</span><span class="chip">Intercom</span><span class="chip">Help Scout</span><span class="chip">HubSpot</span><span class="chip">Front</span><span class="chip">Email</span></div></div>
+      <div class="int-cat"><h3>Issue trackers</h3><p>Where work is planned</p><div class="chips"><span class="chip">Jira</span><span class="chip">Linear</span><span class="chip">GitHub Issues</span><span class="chip">GitLab Issues</span><span class="chip">Asana</span></div></div>
+      <div class="int-cat"><h3>Errors and monitoring</h3><p>Where things break</p><div class="chips"><span class="chip">Sentry</span><span class="chip">Rollbar</span><span class="chip">Bugsnag</span><span class="chip">Datadog</span><span class="chip">New Relic</span><span class="chip">Honeybadger</span></div></div>
+      <div class="int-cat"><h3>Code and CI</h3><p>Where fixes land</p><div class="chips"><span class="chip">GitHub</span><span class="chip">GitLab</span><span class="chip">Bitbucket</span><span class="chip">Azure DevOps</span><span class="chip">GitHub Actions</span><span class="chip">GitLab CI</span></div></div>
+      <div class="int-cat"><h3>Data, read only</h3><p>Where the truth is</p><div class="chips"><span class="chip">PostgreSQL</span><span class="chip">MySQL</span><span class="chip">Metabase</span><span class="chip">BigQuery</span><span class="chip">Snowflake</span><span class="chip">Stripe</span><span class="chip">Mollie</span><span class="chip">Postmark</span><span class="chip">SendGrid</span></div></div>
+      <div class="int-cat"><h3>Team and knowledge</h3><p>Where people talk</p><div class="chips"><span class="chip">Slack</span><span class="chip">Microsoft Teams</span><span class="chip">Notion</span><span class="chip">Confluence</span><span class="chip">Claude Code</span><span class="chip">Codex</span><span class="chip">MCP</span></div></div>
+    </div>
+    <div class="int-foot">
+      <span><b>Using something else?</b> We build the connector during onboarding, usually within days.</span>
+      <a href="mailto:hello@deflekt.dev?subject=Deflekt%20integration" class="btn btn-primary">Ask for a connector</a>
+    </div>
+  </div>
+</section>
+
+<section class="soft" id="security">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Security and control</div>
+      <h2>Your code stays yours.</h2>
+      <p class="lead">Deflekt touches your codebase and your customers' data. It is built so you never have to take that on faith.</p>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-card"><h3>Humans approve, always</h3><p>Replies are drafts, fixes are pull requests, console commands are suggestions. Nothing reaches a customer or production without your team.</p></div>
+      <div class="trust-card"><h3>Read only on production</h3><p>Database and third party access is read only, with credentials encrypted at rest and scoped per project.</p></div>
+      <div class="trust-card"><h3>Customer text is data</h3><p>Ticket content is treated as untrusted input, never as instructions, so a crafted message cannot steer the agent.</p></div>
+    </div>
+    <div class="arch">
+      <div class="arch-box"><div class="k">Deflekt hub</div><b>Dashboard, briefing, memory</b><span>Hosted by us, or on your infrastructure</span></div>
+      <div class="arch-arrow">jobs and results →<br>← no source code</div>
+      <div class="arch-box"><div class="k">Your workers</div><b>Code, tests, QA, data access</b><span>Run in your own network. Your source code never leaves it.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="proof">
+  <div class="container proof">
+    <div>
+      <div class="eyebrow">In production</div>
+      <blockquote>"I used to spend three hours a day on support, in a language I don't speak. Now it's fifteen minutes of reviewing what Deflekt prepared, and bugs are fixed before the customer gets their reply."</blockquote>
+      <p class="cite">Ihcène Medjber, founder, about running Deflekt daily on a Belgian SaaS with thousands of users since March 2026</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n">3h → 15m</div><div class="l">daily time spent on the queue</div></div>
+      <div class="stat"><div class="n">NL · FR · EN</div><div class="l">replies drafted in the customer's language</div></div>
+      <div class="stat"><div class="n">2 min</div><div class="l">from ticket to full investigation</div></div>
+      <div class="stat"><div class="n">Mar 2026</div><div class="l">in daily production since</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="soft" id="faq">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">FAQ</div>
+      <h2>Questions, answered.</h2>
+    </div>
+    <div class="faq">
+      <details><summary>How is this different from Cursor, Claude Code or Devin?</summary><p>Those tools help a developer who already sat down to build something. Deflekt works before that moment: it receives requests from people who don't code, investigates them in your code and data, and decides whether the answer is a reply, a command or a change. When code is needed, it can use the same agents, and it adds what they lack: customer context, production data, QA proof and memory.</p></details>
+      <details><summary>How is it different from AI support agents like Intercom Fin?</summary><p>Support agents answer from your help center and close conversations. Deflekt goes into the code and the data to find the real cause, and fixes bugs instead of explaining them. It works alongside your support team and your help desk, not instead of them.</p></details>
+      <details><summary>Does it change anything in production on its own?</summary><p>No. Deflekt reads production, it never writes to it. Fixes go through pull requests, your tests and your review. Console commands are prepared for a human to run.</p></details>
+      <details><summary>Where does my code run?</summary><p>Workers that read code, run tests and record QA run on your infrastructure. The hub only stores the analyses and results. A fully self hosted setup is available.</p></details>
+      <details><summary>Which languages and stacks does it support?</summary><p>Any language your customers write in, and any stack your engineers work in. It has run daily on Rails, React and React Native codebases, with tickets in Dutch, French and English.</p></details>
+      <details><summary>What if our tools are not in the list?</summary><p>A connector is a small piece of work for us. We build the ones you need during onboarding.</p></details>
+      <details><summary>How much does it cost?</summary><p>We are onboarding a small group of design partners: we set Deflekt up on your stack and tune it with you. Pricing depends on the size of your team and is discussed on the first call.</p></details>
+    </div>
+  </div>
+</section>
+
+<section id="founder">
+  <div class="container">
+    <div class="founder">
+      <div class="avatar">IM</div>
       <div>
-        <span style="color: var(--green)">$ </span><span class="cmd">bin/deflekt run</span><span class="cursor"></span>
-      </div>
-      <div class="terminal-output">
-        <div>[09:01] Fetching <span class="white">47</span> open tickets from Freshdesk...</div>
-        <div>[09:01] Analyzing ticket <span class="amber">#48291</span> - Upload fails for large files...</div>
-        <div>[09:03] <span class="highlight">&#10003;</span> Root cause identified: missing size validation</div>
-        <div>[09:03] <span class="highlight">&#10003;</span> Reply drafted (NL + FR)</div>
-        <div>[09:03] <span class="highlight">&#10003;</span> Bug auto-fixed &rarr; PR <span class="amber">#1847</span> created</div>
-        <div>[09:04] Analyzing ticket <span class="amber">#48293</span>...</div>
-        <div style="color: var(--text-dim)">...</div>
-        <div>[09:31] <span class="white">Done.</span> 47 tickets triaged. 3 bugs auto-fixed.</div>
-        <div>[09:31] Briefing ready at <span class="highlight">localhost:4567</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Story -->
-<section class="story">
-  <div class="container">
-    <blockquote>
-      "Support tickets pile up every morning. Customers write in languages your team doesn't speak. Bugs hide in the backlog because nobody has time to investigate. Deflekt reads every ticket, traces bugs to the source code, and drafts replies your customers actually understand."
-    </blockquote>
-    <p class="attribution">Built for dev teams who ship, not triage</p>
-  </div>
-</section>
-
-<!-- Screenshots -->
-<section class="screenshots" id="demo">
-  <div class="container">
-    <h2>See it in action</h2>
-    <div class="screenshot-grid">
-      <div class="screenshot-item">
-        <div class="label">Dashboard - your entire support queue at a glance</div>
-        <div class="crt-frame" onclick="openLightbox(this.querySelector('img'))">
-          <img src="screenshots/dashboard_full.png" alt="Triage dashboard showing ticket list with priorities, categories, and autofix status">
-        </div>
-      </div>
-      <div class="screenshot-row">
-        <div class="screenshot-item">
-          <div class="label">AI analysis with suggested replies</div>
-          <div class="crt-frame" onclick="openLightbox(this.querySelector('img'))">
-            <img src="screenshots/ticket_analysis.png" alt="Ticket detail showing AI-generated analysis and bilingual reply">
-          </div>
-        </div>
-        <div class="screenshot-item">
-          <div class="label">Daily briefing with patterns</div>
-          <div class="crt-frame" onclick="openLightbox(this.querySelector('img'))">
-            <img src="screenshots/briefing.png" alt="Daily briefing showing executive summary and ticket patterns">
-          </div>
-        </div>
-      </div>
-      <div class="screenshot-item">
-        <div class="label">Autofix diff - review AI-generated code changes</div>
-        <div class="crt-frame" onclick="openLightbox(this.querySelector('img'))">
-          <img src="screenshots/diff_view.png" alt="Diff viewer showing AI-generated code fix with red/green changes">
+        <div class="eyebrow">Who builds it</div>
+        <h3>Ihcène Medjber</h3>
+        <div class="role">Founder · Lead backend engineer · MSc Computational Biology</div>
+        <p>Fifteen years building SaaS products, at Silverfin and Cowboy and as CTO of Cureety. Deflekt started as a script to survive a support queue and grew into the engineer every small product team is missing. Built in Brussels.</p>
+        <div class="links">
+          <a href="https://www.linkedin.com/in/ihc%C3%A8ne-medjber-35b160b0/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://www.linkedin.com/company/deflekt" target="_blank" rel="noopener">Follow Deflekt</a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Features -->
-<section class="features" id="features">
-  <div class="container">
-    <h2>What it does</h2>
-    <div class="feature-list">
-      <p class="feature-group-title">Analysis</p>
-      <div class="feature">
-        <div class="flag">--analyze</div>
-        <div class="desc">AI reads every ticket, understands the issue, checks your codebase, and queries production data. In any language.</div>
-      </div>
-      <div class="feature">
-        <div class="flag">--attachments</div>
-        <div class="desc">Analyzes images, PDFs, CSVs, and logs attached to tickets using vision AI. No manual download needed.</div>
-      </div>
-      <div class="feature">
-        <div class="flag">--query</div>
-        <div class="desc">Runs production database lookups to verify root causes and pull real customer data into the analysis.</div>
-      </div>
-      <div class="feature">
-        <div class="flag">--sources</div>
-        <div class="desc">Ingests from Freshdesk, Sentry, JIRA, and more into a single prioritized queue.</div>
-      </div>
-      <p class="feature-group-title">Automation</p>
-      <div class="feature">
-        <div class="flag">--autofix</div>
-        <div class="desc">Finds the bug in your code, writes the fix, runs your tests, and opens a draft PR. You just review the diff.</div>
-      </div>
-      <div class="feature">
-        <div class="flag">--reply</div>
-        <div class="desc">Drafts multilingual customer replies in your tone and voice. High-confidence replies can be sent with one click.</div>
-      </div>
-      <p class="feature-group-title">Intelligence</p>
-      <div class="feature">
-        <div class="flag">--briefing</div>
-        <div class="desc">Daily patterns across all tickets. What is breaking, what is urgent, what you can batch-close.</div>
-      </div>
-      <div class="feature">
-        <div class="flag">--memory</div>
-        <div class="desc">Harvests institutional knowledge from every resolved ticket. Builds a searchable knowledge base that gets smarter over time.</div>
-      </div>
-      <p class="feature-group-title">Visibility</p>
-      <div class="feature">
-        <div class="flag">--dashboard</div>
-        <div class="desc">Web UI to filter, review, and act on your entire support queue. Priorities, categories, and status at a glance.</div>
-      </div>
-      <div class="feature">
-        <div class="flag">--costs</div>
-        <div class="desc">Tracks AI spend per ticket, per attachment, and per week. Know exactly what triage costs before your bill arrives.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Integrations -->
-<section class="integrations" id="integrations">
-  <div class="container">
-    <h2>Integrations</h2>
-    <p class="integrations-sub">Connects to the tools your team already uses.</p>
-    <div class="integrations-grid">
-      <div class="integration-card">
-        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" stroke="#27ae60" stroke-width="1.5"/><path d="M2 8h20M8 8v12" stroke="#27ae60" stroke-width="1.5"/></svg></div>
-        <div class="integration-name">Freshdesk</div>
-        <div class="integration-type">Support</div>
-      </div>
-      <div class="integration-card">
-        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#6c5ce7" stroke-width="1.5"/><path d="M12 6v6l4 2" stroke="#6c5ce7" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-        <div class="integration-name">Intercom</div>
-        <div class="integration-type">Support</div>
-      </div>
-      <div class="integration-card">
-        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#e74c3c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="integration-name">Zendesk</div>
-        <div class="integration-type">Support</div>
-      </div>
-      <div class="integration-card">
-        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" stroke="#362773" stroke-width="1.5"/><path d="M8 14l2-4h4l2 4" stroke="#362773" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-        <div class="integration-name">Sentry</div>
-        <div class="integration-type">Error tracking</div>
-      </div>
-      <div class="integration-card">
-        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="#0052cc" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="6" r="1.5" fill="#0052cc"/><circle cx="12" cy="12" r="1.5" fill="#0052cc"/><circle cx="8" cy="18" r="1.5" fill="#0052cc"/></svg></div>
-        <div class="integration-name">JIRA</div>
-        <div class="integration-type">Project tracking</div>
-      </div>
-      <div class="integration-card">
-        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" stroke="#f0f0f0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="integration-name">GitHub</div>
-        <div class="integration-type">Code & PRs</div>
-      </div>
-      <div class="integration-card">
-        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" stroke="#999" stroke-width="1.5"/><path d="M14 2v6h6M8 13h8M8 17h8M8 9h2" stroke="#999" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-        <div class="integration-name">Notion</div>
-        <div class="integration-type">Knowledge base</div>
-      </div>
-      <div class="integration-card">
-        <div class="integration-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z" fill="#e01e5a"/><path d="M20.5 10H19v-1.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" fill="#e01e5a"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z" fill="#2eb67d"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z" fill="#2eb67d"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z" fill="#ecb22e"/><path d="M14 20.5v-1.5h1.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5z" fill="#ecb22e"/><path d="M10 9.5c0 .83-.67 1.5-1.5 1.5h-5C2.67 11 2 10.33 2 9.5S2.67 8 3.5 8h5c.83 0 1.5.67 1.5 1.5z" fill="#36c5f0"/><path d="M10 3.5V5H8.5C7.67 5 7 4.33 7 3.5S7.67 2 8.5 2s1.5.67 1.5 1.5z" fill="#36c5f0"/></svg></div>
-        <div class="integration-name">Slack</div>
-        <div class="integration-type">Notifications</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- How it works -->
-<section class="how" id="how">
-  <div class="container">
-    <h2>How it works</h2>
-    <div class="steps">
-      <div class="step">
-        <div class="num">1</div>
-        <div class="title">Connect</div>
-        <div class="detail">Connect your support tools, repos, and production database. Multi-repo, multi-source, one config.</div>
-      </div>
-      <div class="step">
-        <div class="num">2</div>
-        <div class="title">Analyze</div>
-        <div class="detail">Deflekt reads every ticket against your codebase, recent PRs, and production data.</div>
-      </div>
-      <div class="step">
-        <div class="num">3</div>
-        <div class="title">Review</div>
-        <div class="detail">Review prioritized results in the dashboard. Approve replies, merge fixes, close tickets.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Numbers -->
-<section class="numbers">
-  <div class="container">
-    <div class="numbers-grid">
-      <div class="number-item">
-        <div class="value">3h &rarr; 15m</div>
-        <div class="label">Daily support time</div>
-      </div>
-      <div class="number-item">
-        <div class="value">47</div>
-        <div class="label">Tickets triaged before your first coffee</div>
-      </div>
-      <div class="number-item">
-        <div class="value">0</div>
-        <div class="label">Support hires needed</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Architecture -->
-<section class="stack">
-  <div class="container">
-    <h2>Architecture</h2>
-    <p class="stack-line">SaaS hub + self-hosted workers</p>
-    <p class="stack-sub">The dashboard runs in the cloud. The workers that read your code and talk to your AI provider run on your infrastructure. Your source code never leaves your network.</p>
-  </div>
-</section>
-
-<!-- Pricing -->
-<section class="opensource" id="pricing">
-  <div class="container">
-    <h2>Your code stays yours.</h2>
-    <p class="opensource-intro">Deflekt runs as a SaaS, but the workers that read your code and talk to Claude can run on your infrastructure. Your codebase never leaves your perimeter.</p>
-    <div class="pricing-single">
-      <div class="pricing-card featured">
-        <div class="pricing-title">Get started</div>
-        <div class="pricing-desc">
-          <ul>
-            <li>Managed SaaS dashboard, no setup required</li>
-            <li>Workers run on your infrastructure, next to your code</li>
-            <li>Bring your own AI key (Claude, OpenAI, ...)</li>
-            <li>Custom integrations for your stack and workflow</li>
-            <li>Prompt tuning for your domain and tone of voice</li>
-          </ul>
-        </div>
-        <div class="pricing-divider"></div>
-        <div class="pricing-optional">
-          <span class="pricing-optional-label">Fully managed option</span>
-          We host everything, including workers. Ideal for teams that prefer zero ops.
-        </div>
-        <a href="mailto:hello@deflekt.dev" class="cta-button" style="margin-top: 24px;">Book a demo</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- About -->
-<section class="builtby">
-  <div class="container">
-    <h2>About</h2>
-    <div class="builtby-card">
-      <p class="builtby-name">Ihc&egrave;ne Medjber</p>
-      <p class="builtby-role">Founder & CEO &middot; Lead Backend Engineer &middot; MSc Computational Biology</p>
-      <p class="builtby-text">15+ years building and scaling SaaS products. Senior Backend Specialist at Silverfin (fintech) and Cowboy (electric bikes, 100K+ users), CTO at Cureety (health-tech). Deflekt was born from running production support on a multilingual platform with thousands of daily active users.</p>
-      <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 15px;">
-        <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--bg-card); border: 2px dashed var(--green-dim); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px;">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green-dim)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 20c0-4 3.5-7 7-7s7 3 7 7"/><path d="M15 5l2-2m0 0l2 2m-2-2v4"/></svg>
-        </div>
-        <p class="builtby-text" style="margin: 0;">Looking for a business co-founder to take Deflekt to market. The product works, the tech is solid. Now it needs someone who lives and breathes sales, partnerships, and growth.</p>
-      </div>
-      <a href="mailto:hello@deflekt.dev" class="builtby-link">Let's talk &rarr;</a>
-      &nbsp;&nbsp;
-      <a href="https://www.linkedin.com/in/ihc%C3%A8ne-medjber-35b160b0/" target="_blank" class="builtby-link">LinkedIn</a>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
 <section class="cta">
   <div class="container">
-    <h2>Your team should ship, not triage.</h2>
-    <p>See how Deflekt handles your support queue in a 15-minute demo.</p>
-    <a href="mailto:hello@deflekt.dev" class="cta-button">Book a demo</a>
+    <h2>Give your engineers their roadmap back.</h2>
+    <p class="lead">See Deflekt investigate real requests on a stack like yours. 20 minutes, no slides.</p>
+    <div class="hero-ctas">
+      <a href="mailto:hello@deflekt.dev?subject=Deflekt%20demo" class="btn btn-primary">Book a demo</a>
+      <a href="mailto:hello@deflekt.dev?subject=Deflekt%20design%20partner" class="btn btn-ghost">Become a design partner</a>
+    </div>
   </div>
 </section>
 
-<!-- Footer -->
 <footer>
   <div class="container">
-    <p>&copy; 2026 Deflekt. Built in Brussels.</p>
-    <p class="tagline">Let your team ship code, not triage tickets.</p>
+    <span>© 2026 Deflekt · Built in Brussels</span>
+    <span><a href="#product">Product</a><a href="#security">Security</a><a href="mailto:hello@deflekt.dev">Contact</a><a href="https://app.deflekt.dev">Log in</a></span>
   </div>
 </footer>
-
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
-  <img id="lightbox-img" src="" alt="">
-</div>
-
-<script>
-function openLightbox(img) {
-  var lb = document.getElementById('lightbox');
-  document.getElementById('lightbox-img').src = img.src;
-  document.getElementById('lightbox-img').alt = img.alt;
-  lb.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('active');
-  document.body.style.overflow = '';
-}
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeLightbox();
-});
-</script>
 
 </body>
 </html>

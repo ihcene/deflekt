@@ -1,0 +1,6 @@
+{% assign key = include.sort | default: "order" %}{% assign items = site[include.collection] | sort: key %}{% if include.reverse %}{% assign items = items | reverse %}{% endif %}
+<div class="index">
+  {% for d in items %}
+  <a class="index-row" href="{{ d.url }}"><div class="num">{{ d.kicker }}</div><h3>{{ d.title }}</h3><p>{{ d.description }}</p></a>
+  {% endfor %}
+</div>

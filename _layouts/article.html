@@ -1,0 +1,32 @@
+---
+layout: default
+---
+<header class="page-hero">
+  <div class="wrap">
+    <div class="crumbs label"><a href="/">Deflekt</a> / <a href="{{ page.section_url }}">{{ page.section }}</a>{% if page.kicker %} / <b>{{ page.kicker }}</b>{% endif %}</div>
+    <h1>{{ page.headline | default: page.title }}</h1>
+    <p class="sub">{{ page.description }}</p>
+  </div>
+</header>
+
+<section class="article">
+  <div class="wrap article-grid">
+    <aside class="facts">
+      {% if page.facts %}<dl>{% for f in page.facts %}<dt>{{ f[0] }}</dt><dd>{{ f[1] }}</dd>{% endfor %}</dl>{% endif %}
+      <a href="mailto:hello@deflekt.dev?subject=Deflekt%20demo" class="btn btn-ink btn-sm">Book a demo <span class="arr">→</span></a>
+    </aside>
+    <div class="prose">{{ content }}</div>
+  </div>
+</section>
+
+{% assign related = site[page.collection] | where_exp: "d", "d.url != page.url" | sort: "order" %}
+{% if related.size > 0 %}
+<section class="related">
+  <div class="wrap">
+    <div class="label">Keep reading</div>
+    <div class="cards">
+      {% for d in related limit: 3 %}<a class="card-link" href="{{ d.url }}"><span class="label">{{ d.kicker }}</span><b>{{ d.title }}</b><span>{{ d.description | truncatewords: 22 }}</span></a>{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}

@@ -1,431 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deflekt · The AI maintenance engineer for your product</title>
-<meta name="description" content="Deflekt investigates every request your product gets, from customer tickets to errors and silent data bugs, in your code and your production data. It hands your team the answer: a reply, a console command, or a fix tested side by side and ready to merge.">
-<meta property="og:title" content="Deflekt · Every request your product gets, investigated and answered">
-<meta property="og:description" content="The AI maintenance engineer: it listens, investigates in your code and data, answers, fixes with proof, and remembers.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://deflekt.dev">
-<meta name="twitter:card" content="summary">
-<meta name="color-scheme" content="light dark">
-<link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=2">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
-<script>
-  addEventListener("DOMContentLoaded", () => {
-    const v = document.getElementById("reel");
-    v.addEventListener("ended", () => { v.controls = false; v.currentTime = 0; document.querySelector(".reel-play").hidden = false; });
-  });
-  document.documentElement.dataset.theme = localStorage.getItem("theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..800,0..100,0..1;1,9..144,300..800,0..100,0..1&family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
-<style>
-  :root, [data-theme="light"] {
-    --paper: #F3EFE6;
-    --paper-2: #EAE4D7;
-    --card: #FBF9F4;
-    --ink: #16181B;
-    --ink-2: #4A4D52;
-    --ink-3: #85827A;
-    --rule: #D8D1C2;
-    --brand: #6D28D9;
-    --grad: linear-gradient(100deg, #7C3AED 0%, #A855F7 30%, #60C8F0 60%, #F472B6 100%);
-    --signal: #D9480F;
-    --marker: rgba(168,85,247,.22);
-    --ok: #2B7A3D;
-    --term: #16181B;
-    --term-ink: #E9E4D8;
-    --grain: .06;
-    --shadow: 0 1px 0 rgba(22,24,27,.06), 0 18px 40px -18px rgba(22,24,27,.25);
-  }
-  [data-theme="dark"] {
-    --paper: #0F1112;
-    --paper-2: #15181A;
-    --card: #1A1E20;
-    --ink: #EDE8DD;
-    --ink-2: #B4AFA4;
-    --ink-3: #7C786F;
-    --rule: #2A2F31;
-    --brand: #B79CFF;
-    --grad: linear-gradient(100deg, #A78BFA 0%, #C084FC 30%, #60E0F0 60%, #F472B6 100%);
-    --signal: #FF7A3D;
-    --marker: rgba(183,156,255,.3);
-    --ok: #6CD08A;
-    --term: #0A0C0D;
-    --term-ink: #D9D4C8;
-    --grain: .09;
-    --shadow: 0 1px 0 rgba(0,0,0,.4), 0 24px 48px -20px rgba(0,0,0,.8);
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body { background: var(--paper); color: var(--ink); font-family: "Geist", system-ui, sans-serif; font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; transition: background .3s, color .3s; overflow-x: hidden; }
-  body::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: var(--grain); mix-blend-mode: multiply; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-  [data-theme="dark"] body::before { mix-blend-mode: screen; }
-  a { color: inherit; }
-  ::selection { background: var(--marker); color: #16181B; }
-
-  .mono, code { font-family: "Geist Mono", ui-monospace, monospace; }
-  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
-  .label { font-family: "Geist Mono", monospace; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
-  .label b { color: var(--brand); font-weight: 500; }
-  mark { background: linear-gradient(transparent 72%, rgba(96,224,240,.5) 72%, rgba(244,114,182,.5) 96%, transparent 96%); color: inherit; padding: 0 .06em; }
-
-  /* Ticker */
-  .ticker { border-bottom: 1px solid var(--rule); background: #16181B; color: #EDE8DD; overflow: hidden; white-space: nowrap; font-family: "Geist Mono", monospace; font-size: 12px; letter-spacing: .04em; }
-  .ticker-track { display: inline-flex; gap: 48px; padding: 9px 0; animation: tick 60s linear infinite; }
-  .ticker span i { font-style: normal; margin-right: 8px; }
-  .ticker .s { color: #FF7A3D; } .ticker .b { color: #60E0F0; } .ticker .y { color: #F4D35E; }
-  @keyframes tick { to { transform: translateX(-50%); } }
-
-  /* Nav */
-  nav { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--paper) 86%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--rule); }
-  nav .wrap { display: flex; align-items: center; height: 64px; gap: 32px; }
-  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: auto; }
-  .logo img { height: 27px; width: auto; display: block; }
-  .logo span { font-family: "Fraunces", serif; font-size: 25px; font-weight: 600; letter-spacing: -.02em; font-variation-settings: "SOFT" 100, "WONK" 1; }
-  .nav-links { display: flex; gap: 26px; align-items: center; }
-  .nav-links a { font-family: "Geist Mono", monospace; font-size: 13px; text-decoration: none; color: var(--ink-2); }
-  .nav-links a:hover { color: var(--ink); }
-  .nav-links a.btn { color: var(--paper); }
-  .theme-toggle { background: none; border: 1px solid var(--rule); color: var(--ink); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: grid; place-items: center; }
-  .theme-toggle:hover { border-color: var(--ink-3); }
-  .theme-toggle .moon, [data-theme="dark"] .theme-toggle .sun { display: none; }
-  [data-theme="dark"] .theme-toggle .moon { display: block; }
-  .menu-toggle { display: none; }
-
-  .btn { display: inline-flex; align-items: center; gap: 10px; font-family: "Geist Mono", monospace; font-size: 14px; font-weight: 500; padding: 14px 22px; text-decoration: none; border-radius: 999px; transition: transform .15s, background .15s; }
-  .btn:hover { transform: translateY(-1px); }
-  .btn-ink { background: var(--ink); color: var(--paper); }
-  .btn-line { border: 1px solid var(--ink); color: var(--ink); }
-  .btn-sm { padding: 9px 16px; font-size: 13px; }
-  .btn .arr { transition: transform .15s; } .btn:hover .arr { transform: translateX(3px); }
-
-  /* Hero */
-  .hero { position: relative; padding: 72px 0 120px; border-bottom: 1px solid var(--rule); }
-  .hero::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px); background-size: 64px 64px; -webkit-mask-image: radial-gradient(ellipse 70% 80% at 35% 40%, #000 20%, transparent 75%); mask-image: radial-gradient(ellipse 70% 80% at 35% 40%, #000 20%, transparent 75%); pointer-events: none; }
-  .hero .wrap { position: relative; z-index: 1; }
-  .hero-text { display: grid; grid-template-columns: 1.4fr 1fr; gap: 56px; align-items: end; }
-  .hero-meta { display: flex; gap: 18px; margin-bottom: 36px; flex-wrap: wrap; }
-  .hero h1 { font-family: "Fraunces", serif; font-weight: 380; font-size: clamp(48px, 7.4vw, 104px); line-height: .94; letter-spacing: -.035em; font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
-  .hero h1 em, .closing h2 em { font-style: italic; font-weight: 340; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .08em; }
-  .hero .sub { margin: 0 0 32px; max-width: 560px; font-size: 19px; color: var(--ink-2); }
-  .hero .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
-  .oath { margin-top: 32px; display: flex; gap: 14px; align-items: center; max-width: 520px; font-size: 14px; color: var(--ink-2); }
-  .oath .seal { flex: none; width: 54px; height: 54px; border-radius: 50%; border: 1.5px dashed var(--brand); display: grid; place-items: center; color: var(--brand); font-family: "Geist Mono", monospace; font-size: 9px; text-align: center; line-height: 1.2; transform: rotate(-12deg); }
-
-  /* Hero reel */
-  .reel { position: relative; margin-top: 72px; border-radius: 14px; overflow: hidden; border: 1px solid var(--rule); box-shadow: var(--shadow); background: #0F1112; aspect-ratio: 16 / 9; }
-  .reel video { display: block; width: 100%; height: 100%; }
-  .reel-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 18px; font-family: "Geist Mono", monospace; font-size: 12.5px; color: var(--ink-3); }
-  .reel-play { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 18px; border: 0; cursor: pointer; background: radial-gradient(ellipse at center, rgba(15,17,18,.35), rgba(15,17,18,.7)); color: #EDE8DD; font-family: "Geist Mono", monospace; }
-  .reel-play[hidden] { display: none; }
-  .reel-play .ring { width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center; font-size: 28px; padding-left: 6px; color: #fff; background: var(--grad); box-shadow: 0 0 0 10px rgba(255,255,255,.08), 0 20px 50px rgba(0,0,0,.5); transition: transform .2s; }
-  .reel-play:hover .ring { transform: scale(1.07); }
-  .reel-play .lbl { font-size: 14px; letter-spacing: .06em; padding: 8px 14px; border-radius: 999px; background: rgba(15,17,18,.75); }
-
-  /* Sections */
-  section { padding: 128px 0; border-bottom: 1px solid var(--rule); }
-  .sec-head { display: grid; grid-template-columns: 220px 1fr; gap: 32px; margin-bottom: 72px; }
-  .sec-head h2 { font-family: "Fraunces", serif; font-weight: 380; font-size: clamp(38px, 5vw, 68px); line-height: 1; letter-spacing: -.03em; font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
-  .sec-head h2 em { font-style: italic; color: var(--brand); }
-  .sec-head p { margin-top: 22px; color: var(--ink-2); max-width: 640px; font-size: 18.5px; }
-
-  /* Tax: index list */
-  .index { border-top: 1px solid var(--ink); }
-  .index-row { display: grid; grid-template-columns: 220px 1.1fr 1fr; gap: 32px; padding: 34px 0; border-bottom: 1px solid var(--rule); align-items: baseline; transition: background .2s; }
-  .index-row:hover { background: var(--paper-2); }
-  .index-row .num { font-family: "Fraunces", serif; font-style: italic; font-size: 52px; line-height: 1; color: var(--ink-3); font-weight: 300; padding-left: 4px; }
-  .index-row:hover .num { color: var(--brand); }
-  .index-row h3 { font-family: "Fraunces", serif; font-size: 32px; font-weight: 420; letter-spacing: -.02em; line-height: 1.1; }
-  .index-row p { color: var(--ink-2); }
-  .index-row q { display: block; margin-top: 10px; font-family: "Geist Mono", monospace; font-size: 13px; color: var(--ink-3); }
-  .verdict { margin-top: 48px; font-family: "Fraunces", serif; font-size: clamp(26px, 3vw, 38px); line-height: 1.2; letter-spacing: -.02em; max-width: 900px; margin-left: 252px; }
-  .verdict em { color: var(--brand); }
-
-  /* Anatomy of a case */
-  .case { display: grid; grid-template-columns: 220px 1fr; gap: 32px; }
-  .case-rail { position: sticky; top: 104px; align-self: start; }
-  .case-rail .big { font-family: "Fraunces", serif; font-size: 64px; line-height: 1; font-weight: 300; font-style: italic; letter-spacing: -.03em; }
-  .case-rail p { margin-top: 10px; font-size: 14px; color: var(--ink-2); }
-  .case-rail .meta { margin-top: 24px; font-family: "Geist Mono", monospace; font-size: 12px; color: var(--ink-3); display: grid; gap: 4px; }
-  .steps { border-left: 1px solid var(--ink); }
-  .step { position: relative; display: grid; grid-template-columns: 1fr 1.05fr; gap: 48px; padding: 0 0 96px 48px; }
-  .step:last-child { padding-bottom: 0; }
-  .step::before { content: ""; position: absolute; left: -7px; top: 8px; width: 13px; height: 13px; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--ink); }
-  .step:hover::before { background: var(--brand); border-color: var(--brand); }
-  .step .time { font-family: "Geist Mono", monospace; font-size: 12.5px; color: var(--ink-3); letter-spacing: .06em; }
-  .step .time b { color: var(--brand); font-weight: 500; }
-  .step h3 { font-family: "Fraunces", serif; font-size: 40px; font-weight: 400; line-height: 1.05; letter-spacing: -.025em; margin: 10px 0 16px; }
-  .step h3 em { font-style: italic; color: var(--brand); }
-  .step p { color: var(--ink-2); }
-  .step ul { list-style: none; margin-top: 20px; display: grid; gap: 8px; font-size: 15px; }
-  .step li { padding-left: 22px; position: relative; }
-  .step li::before { content: "→"; position: absolute; left: 0; color: var(--brand); font-family: "Geist Mono", monospace; }
-
-  .artifact { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; box-shadow: var(--shadow); font-size: 14px; position: relative; overflow: hidden; align-self: start; }
-  .artifact-tab { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--rule); font-family: "Geist Mono", monospace; font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); }
-  .artifact-tab b { color: var(--ink); font-weight: 600; }
-  .artifact-body { padding: 16px; }
-  .pill { font-family: "Geist Mono", monospace; font-size: 11px; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--rule); white-space: nowrap; text-transform: none; letter-spacing: 0; color: var(--ink-2); }
-  .pill.s { color: var(--signal); border-color: color-mix(in srgb, var(--signal) 45%, transparent); }
-  .pill.b { color: var(--brand); border-color: color-mix(in srgb, var(--brand) 45%, transparent); }
-  .pill.ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
-  .rows { display: grid; }
-  .row { display: grid; grid-template-columns: 90px 1fr auto; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px dashed var(--rule); font-size: 14px; }
-  .row:last-child { border-bottom: 0; }
-  .row .src { font-family: "Geist Mono", monospace; font-size: 11.5px; color: var(--ink-3); }
-  .row .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .term { background: var(--term); color: var(--term-ink); font-family: "Geist Mono", monospace; font-size: 12.5px; line-height: 1.8; padding: 18px 20px; }
-  .term .c { color: #7C786F; } .term .g { color: #60E0F0; } .term .y { color: #F4D35E; } .term .r { color: #FF8A5B; }
-  .letter { font-family: "Fraunces", serif; font-size: 18px; line-height: 1.5; font-variation-settings: "opsz" 24; }
-  .letter .sig { margin-top: 14px; font-style: italic; color: var(--ink-3); font-size: 15px; }
-  .also { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid var(--rule); }
-  .sbs { display: grid; grid-template-columns: 1fr 1fr; }
-  .pane { padding: 16px; }
-  .pane + .pane { border-left: 1px solid var(--rule); }
-  .pane .h { display: flex; justify-content: space-between; font-family: "Geist Mono", monospace; font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 14px; }
-  .screen { border: 1px solid var(--rule); border-radius: 4px; padding: 12px; display: grid; gap: 7px; background: var(--paper); }
-  .bar { height: 7px; border-radius: 4px; background: var(--rule); }
-  .screen .n { font-family: "Fraunces", serif; font-size: 34px; line-height: 1; margin-top: 6px; }
-  .pane.base .n { color: var(--signal); } .pane.fix .n { color: var(--ok); }
-  .screen .cap { font-size: 12px; color: var(--ink-3); }
-  .rec { display: inline-flex; align-items: center; gap: 6px; }
-  .rec::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--signal); animation: blink 1.4s infinite; }
-  @keyframes blink { 50% { opacity: .2; } }
-  .notes { display: grid; }
-  .note { padding: 14px 16px; border-bottom: 1px dashed var(--rule); }
-  .note:last-child { border-bottom: 0; }
-  .note .k { display: flex; justify-content: space-between; font-family: "Geist Mono", monospace; font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
-  .note p { font-size: 14.5px; color: var(--ink); }
-
-  /* Watch: dark band */
-  .band { background: #16181B; color: #EDE8DD; border-bottom: 0; }
-  [data-theme="dark"] .band { background: #070809; }
-  .band .label { color: #8E8A80; }
-  .band .sec-head p { color: #A9A49A; }
-  .band .sec-head h2 em { background: linear-gradient(100deg, #C084FC, #60E0F0 55%, #F472B6); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .08em; }
-  .watch { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #34383B; }
-  .watch > div { padding: 32px 32px 8px 0; }
-  .watch > div + div { border-left: 1px solid #34383B; padding-left: 32px; }
-  .watch h3 { font-family: "Fraunces", serif; font-size: 30px; font-weight: 400; letter-spacing: -.02em; margin: 26px 0 10px; }
-  .watch p { color: #A9A49A; font-size: 15.5px; }
-  .scope { background: #0B0D0E; border: 1px solid #2A2F31; border-radius: 6px; padding: 16px; height: 200px; position: relative; overflow: hidden; background-image: linear-gradient(#1C2124 1px, transparent 1px), linear-gradient(90deg, #1C2124 1px, transparent 1px); background-size: 24px 24px; }
-  .scope .lbl { font-family: "Geist Mono", monospace; font-size: 11px; color: #7C786F; display: flex; justify-content: space-between; }
-  .scope .alert { position: absolute; left: 16px; bottom: 12px; font-family: "Geist Mono", monospace; font-size: 11.5px; color: #FF8A5B; }
-  .scope .row { border-color: #2A2F31; padding: 8px 0; font-size: 13px; color: #D9D4C8; grid-template-columns: 1fr auto; row-gap: 2px; }
-  .scope .row .src { grid-column: 1 / -1; color: #7C786F; }
-  .scope .pill { border-color: #3A3F42; color: #A9A49A; }
-  .scope .pill.s { color: #FF8A5B; } .scope .pill.b { color: #60E0F0; } .scope .pill.ok { color: #6CD08A; }
-  .glow { filter: drop-shadow(0 0 6px rgba(96,224,240,.55)); }
-
-  /* Ask */
-  .ask { display: grid; grid-template-columns: 220px 1fr 1fr; gap: 32px; }
-  .ask h2 { font-family: "Fraunces", serif; font-weight: 380; font-size: clamp(38px, 5vw, 68px); line-height: 1; letter-spacing: -.03em; margin-bottom: 28px; font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
-  .ask h2 em { font-style: italic; color: var(--brand); }
-  .ask .copy p { color: var(--ink-2); font-size: 18px; }
-  .ask .copy p + p { margin-top: 16px; }
-  .agents { margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--ink); }
-  .agents h4 { font-family: "Fraunces", serif; font-size: 24px; font-weight: 420; letter-spacing: -.01em; }
-  .ask .agents p { font-size: 15.5px; margin-top: 8px; }
-  .agents .list { margin-top: 14px; font-family: "Geist Mono", monospace; font-size: 13px; color: var(--ink-3); }
-  .fn { color: var(--brand); font-size: .7em; margin-left: 2px; }
-  .ask .copy p.footnote { margin-top: 22px; font-size: 13.5px; color: var(--ink-3); font-style: italic; max-width: 440px; }
-  .footnote sup { color: var(--brand); font-style: normal; margin-right: 4px; }
-  .memo { display: grid; gap: 14px; align-content: start; padding-top: 8px; }
-  .memo-slip { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; box-shadow: var(--shadow); font-size: 15.5px; }
-  .memo-slip .who { font-family: "Geist Mono", monospace; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); margin-bottom: 6px; }
-  .memo-slip.q { transform: rotate(-1deg); width: 88%; }
-  .memo-slip.a { transform: rotate(.6deg); margin-left: 10%; border-left: 3px solid var(--brand); }
-  .memo-slip .ref { display: block; margin-top: 10px; font-family: "Geist Mono", monospace; font-size: 12px; color: var(--brand); }
-
-  /* Newspaper */
-  .paper { background: var(--card); border: 1px solid var(--rule); box-shadow: var(--shadow); padding: 40px 44px 44px; transform: rotate(-.4deg); }
-  .masthead { text-align: center; border-bottom: 3px double var(--ink); padding-bottom: 14px; }
-  .masthead .title { font-family: "Fraunces", serif; font-size: clamp(42px, 6vw, 78px); font-weight: 700; letter-spacing: -.03em; line-height: 1; font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0; }
-  .masthead .dateline { display: flex; justify-content: space-between; margin-top: 14px; padding-top: 8px; border-top: 1px solid var(--ink); font-family: "Geist Mono", monospace; font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-2); }
-  .news { display: grid; grid-template-columns: 1.6fr 1fr 1fr; margin-top: 26px; }
-  .news > div { padding: 0 24px; }
-  .news > div:first-child { padding-left: 0; }
-  .news > div:last-child { padding-right: 0; }
-  .news > div + div { border-left: 1px solid var(--rule); }
-  .news h3 { font-family: "Fraunces", serif; font-weight: 600; letter-spacing: -.02em; line-height: 1.05; font-size: 40px; }
-  .news h3 em { font-style: italic; font-weight: 400; }
-  .news h4 { font-family: "Fraunces", serif; font-size: 21px; font-weight: 600; line-height: 1.15; margin-bottom: 10px; }
-  .news p, .news li { font-family: "Fraunces", serif; font-size: 15.5px; line-height: 1.5; color: var(--ink-2); font-variation-settings: "opsz" 14; }
-  .news .lead p { margin-top: 14px; columns: 2; column-gap: 22px; }
-  .news .lead p::first-letter { float: left; font-size: 52px; line-height: .9; padding: 4px 6px 0 0; font-weight: 600; color: var(--ink); }
-  .news ul { list-style: none; display: grid; gap: 8px; }
-  .news li { padding-left: 14px; position: relative; }
-  .news li::before { content: "■"; position: absolute; left: 0; font-size: 7px; top: 8px; color: var(--brand); }
-  .news .kicker { font-family: "Geist Mono", monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: .12em; color: var(--signal); margin-bottom: 8px; display: block; }
-  .surfaces { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 56px; border-top: 1px solid var(--ink); }
-  .surfaces div { padding: 18px 20px 0 0; }
-  .surfaces div + div { padding-left: 20px; border-left: 1px solid var(--rule); }
-  .surfaces b { font-family: "Fraunces", serif; font-size: 21px; font-weight: 450; display: block; }
-  .surfaces span { font-size: 14.5px; color: var(--ink-2); }
-
-  /* Integrations wall */
-  .wall { border-top: 1px solid var(--ink); }
-  .wall-row { display: grid; grid-template-columns: 220px 1fr; gap: 32px; padding: 22px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
-  .wall-row .names { min-width: 0; font-family: "Fraunces", serif; font-size: clamp(24px, 2.8vw, 36px); line-height: 1.3; letter-spacing: -.02em; font-weight: 380; }
-  .wall-row .names span { display: inline-block; white-space: nowrap; transition: color .15s; cursor: default; }
-  .wall-row .names span:hover { color: var(--brand); font-style: italic; }
-  .wall-row .names i { font-style: normal; color: var(--rule); margin: 0 .25em; font-weight: 300; }
-  .wall-cta { margin-top: 40px; margin-left: 252px; display: flex; gap: 24px; align-items: center; flex-wrap: wrap; font-size: 18px; color: var(--ink-2); }
-  .wall-cta b { color: var(--ink); font-weight: 600; }
-
-  /* House rules */
-  .rules { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--ink); }
-  .rules > div { padding: 30px 30px 30px 0; }
-  .rules > div + div { border-left: 1px solid var(--rule); padding-left: 30px; }
-  .rules .n { font-family: "Geist Mono", monospace; font-size: 12px; color: var(--brand); }
-  .rules h3 { font-family: "Fraunces", serif; font-size: 28px; font-weight: 420; letter-spacing: -.02em; line-height: 1.1; margin: 10px 0 12px; }
-  .rules p { color: var(--ink-2); font-size: 15.5px; }
-  .topo { margin-top: 56px; display: grid; grid-template-columns: 1fr 220px 1fr; align-items: center; }
-  .node { border: 1px solid var(--ink); padding: 22px 24px; background: var(--card); }
-  .node .label { margin-bottom: 8px; }
-  .node b { font-family: "Fraunces", serif; font-size: 24px; font-weight: 450; display: block; letter-spacing: -.01em; }
-  .node span { font-size: 14.5px; color: var(--ink-2); }
-  .node.yours { border-style: dashed; border-color: var(--brand); }
-  .wire { text-align: center; font-family: "Geist Mono", monospace; font-size: 11px; color: var(--ink-3); line-height: 2.2; position: relative; isolation: isolate; }
-  .wire::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1px dashed var(--ink-3); z-index: -1; }
-  .wire span { background: var(--paper); padding: 2px 8px; display: inline-block; }
-
-  /* Proof */
-  .proof { display: grid; grid-template-columns: 220px 1fr; gap: 32px; }
-  .proof blockquote { font-family: "Fraunces", serif; font-size: clamp(30px, 3.8vw, 52px); line-height: 1.12; font-weight: 340; font-style: italic; letter-spacing: -.025em; text-indent: -.4em; }
-  .proof cite { display: block; margin-top: 28px; font-style: normal; font-family: "Geist Mono", monospace; font-size: 12.5px; color: var(--ink-3); letter-spacing: .04em; }
-  .figures { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 64px; border-top: 1px solid var(--ink); }
-  .figures div { padding: 24px 24px 0 0; }
-  .figures div + div { padding-left: 24px; border-left: 1px solid var(--rule); }
-  .figures b { font-family: "Fraunces", serif; font-size: 46px; font-weight: 380; letter-spacing: -.03em; line-height: 1; display: block; }
-  .figures span { font-size: 14px; color: var(--ink-2); display: block; margin-top: 8px; }
-
-  /* FAQ */
-  .faq { border-top: 1px solid var(--ink); }
-  details { border-bottom: 1px solid var(--rule); }
-  summary { list-style: none; cursor: pointer; padding: 24px 0; display: flex; justify-content: space-between; gap: 24px; font-family: "Fraunces", serif; font-size: 24px; font-weight: 420; letter-spacing: -.015em; }
-  summary::-webkit-details-marker { display: none; }
-  summary::after { content: "+"; font-family: "Geist Mono", monospace; font-size: 20px; color: var(--ink-3); transition: transform .2s; }
-  details[open] summary::after { transform: rotate(45deg); color: var(--brand); }
-  details p { padding: 0 0 26px; color: var(--ink-2); max-width: 740px; }
-
-  /* Founder */
-  .founder { display: grid; grid-template-columns: 220px 1fr; gap: 32px; }
-  .founder .card { display: grid; grid-template-columns: 1fr 1.4fr; gap: 48px; align-items: start; }
-  .founder h3 { font-family: "Fraunces", serif; font-size: 48px; font-weight: 380; letter-spacing: -.03em; line-height: 1; }
-  .founder .role { font-family: "Geist Mono", monospace; font-size: 12.5px; color: var(--ink-3); margin-top: 14px; line-height: 1.7; }
-  .founder p { font-size: 18.5px; color: var(--ink-2); }
-  .founder .links { margin-top: 22px; display: flex; gap: 24px; font-family: "Geist Mono", monospace; font-size: 13px; }
-  .founder .links a { color: var(--brand); text-decoration: none; border-bottom: 1px solid currentColor; }
-
-  /* Closing */
-  .closing { padding: 140px 0 0; border-bottom: 0; overflow: hidden; }
-  .closing h2 { font-family: "Fraunces", serif; font-size: clamp(44px, 7vw, 100px); font-weight: 360; letter-spacing: -.035em; line-height: .98; max-width: 1000px; font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
-  .closing .ctas { margin-top: 44px; display: flex; gap: 12px; flex-wrap: wrap; }
-  .giant { margin-top: 110px; font-family: "Fraunces", serif; font-weight: 700; font-size: 25vw; line-height: .72; letter-spacing: -.06em; color: transparent; -webkit-text-stroke: 1px var(--ink-3); text-align: center; user-select: none; font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1; transform: translateY(8%); }
-  footer { border-top: 1px solid var(--rule); padding: 24px 0; font-family: "Geist Mono", monospace; font-size: 12px; color: var(--ink-3); position: relative; background: var(--paper); }
-  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-  footer a { text-decoration: none; margin-left: 20px; }
-  footer a:hover { color: var(--ink); }
-
-  @media (prefers-reduced-motion: reduce) { .ticker-track, .rec::before { animation: none; } html { scroll-behavior: auto; } }
-
-  @media (max-width: 1040px) {
-    .hero-text { grid-template-columns: 1fr; gap: 28px; }
-    .sec-head, .case, .ask, .proof, .founder, .wall-row { grid-template-columns: 1fr; gap: 16px; }
-    .index-row { grid-template-columns: 90px 1fr; }
-    .index-row p { grid-column: 2; }
-    .verdict, .wall-cta { margin-left: 0; }
-    .case-rail { position: static; }
-    .step { grid-template-columns: 1fr; gap: 28px; }
-    .watch, .rules, .news, .surfaces, .figures { grid-template-columns: 1fr 1fr; }
-    .watch > div, .rules > div, .news > div, .surfaces div, .figures div { border-left: 0 !important; padding-left: 0 !important; padding-right: 24px; }
-    .news .lead { grid-column: 1 / -1; margin-bottom: 28px; }
-    .founder .card { grid-template-columns: 1fr; gap: 20px; }
-    .topo { grid-template-columns: 1fr; gap: 16px; }
-    .wire::before { display: none; }
-    section { padding: 96px 0; }
-  }
-  @media (max-width: 720px) {
-    body { font-size: 16px; }
-    .wrap { padding: 0 20px; }
-    .menu-toggle { display: grid; }
-    .nav-links { display: none; position: absolute; top: 64px; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; background: var(--paper); border-bottom: 1px solid var(--rule); padding: 8px 20px 20px; }
-    .nav-links.open { display: flex; }
-    .nav-links a { padding: 12px 0; font-size: 15px; }
-    .nav-links .btn { justify-content: center; margin-top: 8px; }
-    nav .wrap { gap: 10px; }
-    .reel { margin-top: 48px; border-radius: 10px; }
-    .reel-play .ring { width: 64px; height: 64px; font-size: 20px; }
-    .reel-play .lbl { font-size: 12px; }
-    .watch, .rules, .news, .surfaces, .figures, .sbs { grid-template-columns: 1fr; }
-    .pane + .pane { border-left: 0; border-top: 1px solid var(--rule); }
-    .news .lead p { columns: 1; }
-    .paper { padding: 28px 22px; transform: none; }
-    .masthead .dateline { flex-direction: column; gap: 4px; }
-    .step { padding-left: 28px; }
-    .row { grid-template-columns: 1fr auto; }
-    .row .src { grid-column: 1 / -1; }
-    .memo-slip.q, .memo-slip.a { width: auto; margin-left: 0; }
-    .index-row { grid-template-columns: 1fr; gap: 8px; }
-    .index-row p { grid-column: auto; }
-    footer a { margin: 0 16px 0 0; }
-  }
-</style>
-</head>
-<body>
-
-<div class="ticker" aria-hidden="true">
-  <div class="ticker-track">
-    <span><i class="b">●</i>FRESHDESK  Twee keer afgeschreven deze maand</span>
-    <span><i class="s">▲</i>SENTRY  NoMethodError in ExportJob ×340</span>
-    <span><i class="y">◆</i>DATA WATCH  exports.rows_written fell to 0</span>
-    <span><i class="b">✓</i>MOLLIE  38 subscriptions charged twice · €4,218</span>
-    <span><i class="b">●</i>ZENDESK  Export CSV vide depuis hier</span>
-    <span><i class="y">◆</i>REGULATOR  Electronic invoicing mandatory from Jan 1</span>
-    <span><i class="b">?</i>SLACK  Do we already send a reminder before the due date?</span>
-    <span><i class="b">✓</i>REPLY  drafted in Dutch, waiting for approval</span>
-    <span><i class="b">●</i>FRESHDESK  Twee keer afgeschreven deze maand</span>
-    <span><i class="s">▲</i>SENTRY  NoMethodError in ExportJob ×340</span>
-    <span><i class="y">◆</i>DATA WATCH  exports.rows_written fell to 0</span>
-    <span><i class="b">✓</i>MOLLIE  38 subscriptions charged twice · €4,218</span>
-    <span><i class="b">●</i>ZENDESK  Export CSV vide depuis hier</span>
-    <span><i class="y">◆</i>REGULATOR  Electronic invoicing mandatory from Jan 1</span>
-    <span><i class="b">?</i>SLACK  Do we already send a reminder before the due date?</span>
-    <span><i class="b">✓</i>REPLY  drafted in Dutch, waiting for approval</span>
-  </div>
-</div>
-
-<nav>
-  <div class="wrap">
-    <a href="/" class="logo" aria-label="Deflekt home">
-      <img src="logo.svg" alt="" width="30" height="27">
-      <span>deflekt</span>
-    </a>
-    <div class="nav-links">
-      <a href="#case">How it works</a>
-      <a href="#watch">Watch</a>
-      <a href="#integrations">Integrations</a>
-      <a href="#rules">Security</a>
-      <a href="https://app.deflekt.dev">Log in</a>
-      <a href="mailto:hello@deflekt.dev?subject=Deflekt%20demo" class="btn btn-ink btn-sm">Book a demo</a>
-    </div>
-    <button class="theme-toggle" aria-label="Switch between light and dark mode" onclick="const t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t;localStorage.setItem('theme',t)">
-      <svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-      <svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-    </button>
-    <button class="theme-toggle menu-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
-    </button>
-  </div>
-</nav>
-
+---
+layout: default
+ticker: true
+description: Deflekt investigates every request your product gets, from customer tickets to errors and silent data bugs, in your code and your production data. It hands your team the answer, a reply, a console command, or a fix tested side by side and ready to merge.
+---
 <header class="hero">
   <div class="wrap">
     <div class="hero-meta"><span class="label"><b>●</b> The AI maintenance engineer</span><span class="label">Built in Brussels</span></div>
@@ -485,6 +62,7 @@
         <div class="big">#5172</div>
         <p>One customer writes in Dutch about a double charge. Thirty eight were charged twice. Thirty seven have not noticed yet.</p>
         <div class="meta"><span>Opened 08:42</span><span>Everything ready 08:52</span><span>€4,218 back before anyone else writes</span></div>
+        <a class="more" href="/case-files/double-charge/">Read the full case file →</a>
       </aside>
 
       <div class="steps">
@@ -603,6 +181,7 @@
         </div>
         <h3>Data Watch</h3>
         <p>Nightly probes of your own database. A feature that stops writing, a column that suddenly goes empty, a status nobody has seen before. The data shows the bug first.</p>
+        <a class="more" href="/use-cases/silent-data-bugs/">Silent data bugs →</a>
       </div>
       <div>
         <div class="scope">
@@ -614,6 +193,7 @@
         </div>
         <h3>Regulatory and partner watch</h3>
         <p>The worst tickets were announced in public months before they arrived. Deflekt reads regulator feeds and partner changelogs in any language, judges each item against your product, and learns from what you dismiss.</p>
+        <a class="more" href="/use-cases/regulatory-changes/">Regulatory changes →</a>
       </div>
       <div>
         <div class="scope">
@@ -625,6 +205,7 @@
         </div>
         <h3>Errors with a story</h3>
         <p>Errors are linked to the customers they hurt and the tickets they cause. A rising error becomes one case with a fix, instead of a dashboard nobody opens.</p>
+        <a class="more" href="/integrations/sentry/">Deflekt for Sentry →</a>
       </div>
     </div>
   </div>
@@ -641,6 +222,7 @@
         <h4>Works with the coding agents you already use.</h4>
         <p>Deflekt doesn't replace your IDE or your coding agent. It decides what is worth building, hands the agent the full context, and checks the result.</p>
         <div class="list">Claude Code / Codex / Cursor / any MCP client</div>
+        <a class="more" href="/compare/coding-agents/">Deflekt vs coding agents →</a>
       </div>
       <p class="footnote"><sup>†</sup> And when you say go, it builds the whole feature: code across your repositories, tests, recorded QA, a pull request ready to review. We just think deciding what to build is the harder part.</p>
     </div>
@@ -703,14 +285,7 @@
         <p>Deflekt reads where requests arrive, where your code lives and where your data sits.</p>
       </div>
     </div>
-    <div class="wall">
-      <div class="wall-row"><div class="label">Help desks</div><div class="names"><span>Freshdesk <i>/</i></span><span>Zendesk <i>/</i></span><span>Intercom <i>/</i></span><span>Help Scout <i>/</i></span><span>HubSpot <i>/</i></span><span>Front <i>/</i></span><span>Email</span></div></div>
-      <div class="wall-row"><div class="label">Issue trackers</div><div class="names"><span>Jira <i>/</i></span><span>Linear <i>/</i></span><span>GitHub Issues <i>/</i></span><span>GitLab Issues <i>/</i></span><span>Asana</span></div></div>
-      <div class="wall-row"><div class="label">Errors</div><div class="names"><span>Sentry <i>/</i></span><span>Rollbar <i>/</i></span><span>Bugsnag <i>/</i></span><span>Datadog <i>/</i></span><span>New Relic <i>/</i></span><span>Honeybadger</span></div></div>
-      <div class="wall-row"><div class="label">Code and CI</div><div class="names"><span>GitHub <i>/</i></span><span>GitLab <i>/</i></span><span>Bitbucket <i>/</i></span><span>Azure DevOps <i>/</i></span><span>GitHub Actions <i>/</i></span><span>GitLab CI</span></div></div>
-      <div class="wall-row"><div class="label">Data, read only</div><div class="names"><span>PostgreSQL <i>/</i></span><span>MySQL <i>/</i></span><span>Metabase <i>/</i></span><span>BigQuery <i>/</i></span><span>Snowflake <i>/</i></span><span>Stripe <i>/</i></span><span>Mollie <i>/</i></span><span>Postmark <i>/</i></span><span>SendGrid</span></div></div>
-      <div class="wall-row"><div class="label">Team</div><div class="names"><span>Slack <i>/</i></span><span>Microsoft Teams <i>/</i></span><span>Notion <i>/</i></span><span>Confluence <i>/</i></span><span>Claude Code <i>/</i></span><span>Codex <i>/</i></span><span>MCP</span></div></div>
-    </div>
+    {% include wall.html %}
     <div class="wall-cta"><span><b>Using something else?</b> We build the connector during onboarding, usually within days.</span><a href="mailto:hello@deflekt.dev?subject=Deflekt%20connector" class="btn btn-line btn-sm">Ask for a connector <span class="arr">→</span></a></div>
   </div>
 </section>
@@ -760,8 +335,8 @@
     <div class="sec-head">
       <div class="label">§ 9 · Questions</div>
       <div class="faq">
-        <details><summary>How is this different from Cursor, Claude Code or Devin?</summary><p>Those tools help a developer who already sat down to build something. Deflekt works before that moment: it receives requests from people who don't code, investigates them in your code and data, and decides whether the answer is a reply, a command or a change. When code is needed it can use the same agents, and it adds what they lack: customer context, production data, proof and memory.</p></details>
-        <details><summary>How is it different from AI support agents like Intercom Fin?</summary><p>Support agents answer from your help center and close conversations. Deflekt goes into the code and the data to find the real cause, and fixes bugs instead of explaining them. It works alongside your support team and your help desk.</p></details>
+        <details><summary>How is this different from Cursor, Claude Code or Devin?</summary><p>Those tools help a developer who already sat down to build something. Deflekt works before that moment: it receives requests from people who don't code, investigates them in your code and data, and decides whether the answer is a reply, a command or a change. When code is needed it can use the same agents, and it adds what they lack: customer context, production data, proof and memory. <a href="/compare/coding-agents/">Full comparison</a>.</p></details>
+        <details><summary>How is it different from AI support agents like Intercom Fin?</summary><p>Support agents answer from your help center and close conversations. Deflekt goes into the code and the data to find the real cause, and fixes bugs instead of explaining them. It works alongside your support team and your help desk. <a href="/compare/intercom-fin/">Full comparison</a>.</p></details>
         <details><summary>Does it change anything in production on its own?</summary><p>No. Deflekt reads production, it never writes to it. Fixes go through pull requests, your tests and your review. Console commands are prepared for a human to run.</p></details>
         <details><summary>Where does my code run?</summary><p>Workers that read code, run tests and record QA run on your infrastructure. The hub only stores analyses and results. A fully self hosted setup is available.</p></details>
         <details><summary>Which languages and stacks does it support?</summary><p>Any language your customers write in, and any stack your engineers work in. It runs daily on Rails, React and React Native codebases, with tickets in Dutch, French and English.</p></details>
@@ -788,23 +363,6 @@
   </div>
 </section>
 
-<section class="closing">
-  <div class="wrap">
-    <h2>Give your engineers <em>their roadmap back.</em></h2>
-    <div class="ctas">
-      <a href="mailto:hello@deflekt.dev?subject=Deflekt%20demo" class="btn btn-ink">Book a 20 min demo <span class="arr">→</span></a>
-      <a href="mailto:hello@deflekt.dev?subject=Deflekt%20design%20partner" class="btn btn-line">Become a design partner</a>
-    </div>
-  </div>
-  <div class="giant" aria-hidden="true">deflekt</div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <span>© 2026 Deflekt · Built in Brussels</span>
-    <span><a href="#case">How it works</a><a href="#rules">Security</a><a href="mailto:hello@deflekt.dev">Contact</a><a href="https://app.deflekt.dev">Log in</a></span>
-  </div>
-</footer>
-
-</body>
-</html>
+<script>
+  document.getElementById("reel").addEventListener("ended", e => { const v = e.target; v.controls = false; v.currentTime = 0; document.querySelector(".reel-play").hidden = false; });
+</script>

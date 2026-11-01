@@ -27,9 +27,10 @@
     --ink-2: #4A4D52;
     --ink-3: #85827A;
     --rule: #D8D1C2;
-    --brand: #0F766E;
+    --brand: #6D28D9;
+    --grad: linear-gradient(100deg, #7C3AED 0%, #A855F7 30%, #60C8F0 60%, #F472B6 100%);
     --signal: #D9480F;
-    --marker: #F4D35E;
+    --marker: rgba(168,85,247,.22);
     --ok: #2B7A3D;
     --term: #16181B;
     --term-ink: #E9E4D8;
@@ -44,9 +45,10 @@
     --ink-2: #B4AFA4;
     --ink-3: #7C786F;
     --rule: #2A2F31;
-    --brand: #3CCFBE;
+    --brand: #B79CFF;
+    --grad: linear-gradient(100deg, #A78BFA 0%, #C084FC 30%, #60E0F0 60%, #F472B6 100%);
     --signal: #FF7A3D;
-    --marker: #3CCFBE;
+    --marker: rgba(183,156,255,.3);
     --ok: #6CD08A;
     --term: #0A0C0D;
     --term-ink: #D9D4C8;
@@ -65,22 +67,20 @@
   .wrap { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
   .label { font-family: "Geist Mono", monospace; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
   .label b { color: var(--brand); font-weight: 500; }
-  mark { background: linear-gradient(transparent 58%, var(--marker) 58%, var(--marker) 92%, transparent 92%); color: inherit; padding: 0 .06em; }
-  [data-theme="dark"] mark { background: none; color: var(--brand); }
+  mark { background: linear-gradient(transparent 72%, rgba(96,224,240,.5) 72%, rgba(244,114,182,.5) 96%, transparent 96%); color: inherit; padding: 0 .06em; }
 
   /* Ticker */
   .ticker { border-bottom: 1px solid var(--rule); background: #16181B; color: #EDE8DD; overflow: hidden; white-space: nowrap; font-family: "Geist Mono", monospace; font-size: 12px; letter-spacing: .04em; }
   .ticker-track { display: inline-flex; gap: 48px; padding: 9px 0; animation: tick 60s linear infinite; }
   .ticker span i { font-style: normal; margin-right: 8px; }
-  .ticker .s { color: #FF7A3D; } .ticker .b { color: #5EEAD4; } .ticker .y { color: #F4D35E; }
+  .ticker .s { color: #FF7A3D; } .ticker .b { color: #60E0F0; } .ticker .y { color: #F4D35E; }
   @keyframes tick { to { transform: translateX(-50%); } }
 
   /* Nav */
   nav { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--paper) 86%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--rule); }
   nav .wrap { display: flex; align-items: center; height: 64px; gap: 32px; }
   .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: auto; }
-  .logo svg { height: 24px; width: auto; }
-  .logo svg g { fill: var(--brand); }
+  .logo img { height: 27px; width: auto; display: block; }
   .logo span { font-family: "Fraunces", serif; font-size: 25px; font-weight: 600; letter-spacing: -.02em; font-variation-settings: "SOFT" 100, "WONK" 1; }
   .nav-links { display: flex; gap: 26px; align-items: center; }
   .nav-links a { font-family: "Geist Mono", monospace; font-size: 13px; text-decoration: none; color: var(--ink-2); }
@@ -105,7 +105,7 @@
   .hero .wrap { position: relative; z-index: 1; display: grid; grid-template-columns: 1.25fr .9fr; gap: 48px; align-items: center; }
   .hero-meta { display: flex; gap: 18px; margin-bottom: 36px; flex-wrap: wrap; }
   .hero h1 { font-family: "Fraunces", serif; font-weight: 380; font-size: clamp(48px, 7.4vw, 104px); line-height: .94; letter-spacing: -.035em; font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
-  .hero h1 em { font-style: italic; font-weight: 340; color: var(--brand); }
+  .hero h1 em, .closing h2 em { font-style: italic; font-weight: 340; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .08em; }
   .hero .sub { margin: 34px 0 40px; max-width: 560px; font-size: 19px; color: var(--ink-2); }
   .hero .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
   .oath { margin-top: 44px; display: flex; gap: 14px; align-items: center; max-width: 520px; font-size: 14px; color: var(--ink-2); }
@@ -188,7 +188,7 @@
   .row .src { font-family: "Geist Mono", monospace; font-size: 11.5px; color: var(--ink-3); }
   .row .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .term { background: var(--term); color: var(--term-ink); font-family: "Geist Mono", monospace; font-size: 12.5px; line-height: 1.8; padding: 18px 20px; }
-  .term .c { color: #7C786F; } .term .g { color: #5EEAD4; } .term .y { color: #F4D35E; } .term .r { color: #FF8A5B; }
+  .term .c { color: #7C786F; } .term .g { color: #60E0F0; } .term .y { color: #F4D35E; } .term .r { color: #FF8A5B; }
   .letter { font-family: "Fraunces", serif; font-size: 18px; line-height: 1.5; font-variation-settings: "opsz" 24; }
   .letter .sig { margin-top: 14px; font-style: italic; color: var(--ink-3); font-size: 15px; }
   .also { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid var(--rule); }
@@ -215,7 +215,7 @@
   [data-theme="dark"] .band { background: #070809; }
   .band .label { color: #8E8A80; }
   .band .sec-head p { color: #A9A49A; }
-  .band .sec-head h2 em { color: #5EEAD4; }
+  .band .sec-head h2 em { background: linear-gradient(100deg, #C084FC, #60E0F0 55%, #F472B6); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .08em; }
   .watch { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #34383B; }
   .watch > div { padding: 32px 32px 8px 0; }
   .watch > div + div { border-left: 1px solid #34383B; padding-left: 32px; }
@@ -227,8 +227,8 @@
   .scope .row { border-color: #2A2F31; padding: 8px 0; font-size: 13px; color: #D9D4C8; grid-template-columns: 1fr auto; row-gap: 2px; }
   .scope .row .src { grid-column: 1 / -1; color: #7C786F; }
   .scope .pill { border-color: #3A3F42; color: #A9A49A; }
-  .scope .pill.s { color: #FF8A5B; } .scope .pill.b { color: #5EEAD4; } .scope .pill.ok { color: #6CD08A; }
-  .glow { filter: drop-shadow(0 0 6px rgba(94,234,212,.55)); }
+  .scope .pill.s { color: #FF8A5B; } .scope .pill.b { color: #60E0F0; } .scope .pill.ok { color: #6CD08A; }
+  .glow { filter: drop-shadow(0 0 6px rgba(96,224,240,.55)); }
 
   /* Ask */
   .ask { display: grid; grid-template-columns: 220px 1fr 1fr; gap: 32px; }
@@ -331,7 +331,6 @@
   /* Closing */
   .closing { padding: 140px 0 0; border-bottom: 0; overflow: hidden; }
   .closing h2 { font-family: "Fraunces", serif; font-size: clamp(44px, 7vw, 100px); font-weight: 360; letter-spacing: -.035em; line-height: .98; max-width: 1000px; font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
-  .closing h2 em { font-style: italic; color: var(--brand); }
   .closing .ctas { margin-top: 44px; display: flex; gap: 12px; flex-wrap: wrap; }
   .giant { margin-top: 110px; font-family: "Fraunces", serif; font-weight: 700; font-size: 25vw; line-height: .72; letter-spacing: -.06em; color: transparent; -webkit-text-stroke: 1px var(--ink-3); text-align: center; user-select: none; font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1; transform: translateY(8%); }
   footer { border-top: 1px solid var(--rule); padding: 24px 0; font-family: "Geist Mono", monospace; font-size: 12px; color: var(--ink-3); position: relative; background: var(--paper); }
@@ -412,7 +411,7 @@
 <nav>
   <div class="wrap">
     <a href="/" class="logo" aria-label="Deflekt home">
-      <svg viewBox="0 0 157 166" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g transform="translate(0,166) scale(0.1,-0.1)"><path d="M193 1452 c-53 -3 -65 -7 -83 -29 -20 -25 -20 -37 -20 -609 l0 -583 24 -28 c24 -28 25 -28 140 -26 186 2 296 47 435 177 146 135 461 450 461 461 0 18 -493 493 -560 540 -111 77 -228 105 -397 97z m240 -263 c57 -30 145 -116 172 -169 51 -101 66 -203 44 -299 -35 -154 -174 -293 -306 -309 l-43 -5 0 405 c0 223 2 407 5 410 9 9 83 -11 128 -33z"/><path d="M710 1457 c0 -2 142 -145 315 -317 173 -173 315 -321 315 -330 0 -8 -139 -153 -310 -323 -170 -169 -310 -309 -310 -312 0 -3 60 -5 133 -5 l132 0 243 238 c185 181 243 243 243 262 1 14 2 87 2 163 l1 138 -245 245 -245 244 -137 0 c-75 0 -137 -2 -137 -3z"/></g></svg>
+      <img src="logo.svg" alt="" width="30" height="27">
       <span>deflekt</span>
     </a>
     <div class="nav-links">
@@ -621,7 +620,7 @@
       <div>
         <div class="scope">
           <div class="lbl"><span>exports.rows_written / day</span><span>30d</span></div>
-          <svg viewBox="0 0 300 110" width="100%" height="120" aria-hidden="true"><polyline class="glow" fill="none" stroke="#5EEAD4" stroke-width="1.8" points="0,52 20,46 40,54 60,42 80,48 100,38 120,46 140,40 160,48 180,38 200,44 220,36 240,42"/><polyline fill="none" stroke="#FF8A5B" stroke-width="1.8" points="240,42 256,102 280,103 300,103"/><circle cx="256" cy="102" r="4" fill="#FF8A5B"/></svg>
+          <svg viewBox="0 0 300 110" width="100%" height="120" aria-hidden="true"><polyline class="glow" fill="none" stroke="#60E0F0" stroke-width="1.8" points="0,52 20,46 40,54 60,42 80,48 100,38 120,46 140,40 160,48 180,38 200,44 220,36 240,42"/><polyline fill="none" stroke="#FF8A5B" stroke-width="1.8" points="240,42 256,102 280,103 300,103"/><circle cx="256" cy="102" r="4" fill="#FF8A5B"/></svg>
           <div class="alert">▲ stopped writing 2 days ago · no error raised</div>
         </div>
         <h3>Data Watch</h3>

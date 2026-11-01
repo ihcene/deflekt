@@ -102,38 +102,23 @@
   /* Hero */
   .hero { position: relative; padding: 72px 0 120px; border-bottom: 1px solid var(--rule); }
   .hero::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px); background-size: 64px 64px; -webkit-mask-image: radial-gradient(ellipse 70% 80% at 35% 40%, #000 20%, transparent 75%); mask-image: radial-gradient(ellipse 70% 80% at 35% 40%, #000 20%, transparent 75%); pointer-events: none; }
-  .hero .wrap { position: relative; z-index: 1; display: grid; grid-template-columns: 1.25fr .9fr; gap: 48px; align-items: center; }
+  .hero .wrap { position: relative; z-index: 1; }
+  .hero-text { display: grid; grid-template-columns: 1.4fr 1fr; gap: 56px; align-items: end; }
   .hero-meta { display: flex; gap: 18px; margin-bottom: 36px; flex-wrap: wrap; }
   .hero h1 { font-family: "Fraunces", serif; font-weight: 380; font-size: clamp(48px, 7.4vw, 104px); line-height: .94; letter-spacing: -.035em; font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
   .hero h1 em, .closing h2 em { font-style: italic; font-weight: 340; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .08em; }
-  .hero .sub { margin: 34px 0 40px; max-width: 560px; font-size: 19px; color: var(--ink-2); }
+  .hero .sub { margin: 0 0 32px; max-width: 560px; font-size: 19px; color: var(--ink-2); }
   .hero .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
-  .oath { margin-top: 44px; display: flex; gap: 14px; align-items: center; max-width: 520px; font-size: 14px; color: var(--ink-2); }
+  .oath { margin-top: 32px; display: flex; gap: 14px; align-items: center; max-width: 520px; font-size: 14px; color: var(--ink-2); }
   .oath .seal { flex: none; width: 54px; height: 54px; border-radius: 50%; border: 1.5px dashed var(--brand); display: grid; place-items: center; color: var(--brand); font-family: "Geist Mono", monospace; font-size: 9px; text-align: center; line-height: 1.2; transform: rotate(-12deg); }
 
-  /* Case file stack */
-  .stack { position: relative; height: 560px; }
-  .slip { position: absolute; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; box-shadow: var(--shadow); padding: 20px 22px; width: 88%; }
-  .slip.back1 { top: 0; left: 10%; transform: rotate(5deg); }
-  .slip.back2 { top: 40px; left: 0; transform: rotate(-4deg); }
-  .slip.front { top: 92px; left: 6%; transform: rotate(.8deg); padding-bottom: 26px; }
-  .slip-head { display: flex; justify-content: space-between; align-items: baseline; font-family: "Geist Mono", monospace; font-size: 11.5px; color: var(--ink-3); letter-spacing: .06em; text-transform: uppercase; padding-bottom: 12px; border-bottom: 1px dashed var(--rule); margin-bottom: 14px; }
-  .slip-head b { color: var(--ink); font-weight: 600; }
-  .slip .quote { font-family: "Fraunces", serif; font-size: 22px; line-height: 1.3; font-style: italic; font-weight: 350; padding-right: 70px; }
-  .slip .from { font-size: 13px; color: var(--ink-3); margin-top: 8px; }
-  .trail { list-style: none; margin: 18px 0 0; font-family: "Geist Mono", monospace; font-size: 12.5px; color: var(--ink-2); display: grid; gap: 7px; }
-  .trail li { display: grid; grid-template-columns: 48px 1fr; }
-  .trail li span { color: var(--ink-3); }
-  .trail b { color: var(--ink); font-weight: 500; }
-  .perf { margin: 20px -22px 16px; border-top: 2px dotted var(--rule); position: relative; }
-  .perf::before, .perf::after { content: ""; position: absolute; top: -10px; width: 18px; height: 18px; border-radius: 50%; background: var(--paper); border: 1px solid var(--rule); }
-  .perf::before { left: -10px; } .perf::after { right: -10px; }
-  .outcome { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 14px; }
-  .outcome .k { font-family: "Geist Mono", monospace; font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .08em; }
-  .outcome .v { font-weight: 600; }
-  .stamp { position: absolute; font-family: "Geist Mono", monospace; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; font-size: 13px; padding: 8px 12px; border: 2px solid currentColor; border-radius: 4px; opacity: .9; background: color-mix(in srgb, var(--card) 70%, transparent); }
-  .stamp.verified { color: var(--ok); right: -14px; bottom: -18px; transform: rotate(-9deg); outline: 1px solid currentColor; outline-offset: 2px; }
-  .stamp.urgent { color: var(--signal); right: 22px; top: 54px; transform: rotate(7deg); font-size: 11px; padding: 5px 9px; }
+  /* Hero reel */
+  .reel { position: relative; margin-top: 72px; border-radius: 14px; overflow: hidden; border: 1px solid var(--rule); box-shadow: var(--shadow); background: #0F1112; aspect-ratio: 16 / 9; }
+  .reel video { display: block; width: 100%; height: 100%; }
+  .reel-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 18px; font-family: "Geist Mono", monospace; font-size: 12.5px; color: var(--ink-3); }
+  .reel-sound { display: inline-flex; gap: 10px; align-items: center; font-family: "Geist Mono", monospace; font-size: 13px; padding: 11px 18px; border-radius: 999px; border: 0; cursor: pointer; background: var(--ink); color: var(--paper); }
+  .reel-sound:hover { transform: translateY(-1px); }
+  .reel-sound span { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--grad); color: #fff; font-size: 10px; }
 
   /* Sections */
   section { padding: 128px 0; border-bottom: 1px solid var(--rule); }
@@ -344,8 +329,7 @@
   @media (prefers-reduced-motion: reduce) { .ticker-track, .rec::before { animation: none; } html { scroll-behavior: auto; } }
 
   @media (max-width: 1040px) {
-    .hero .wrap { grid-template-columns: 1fr; }
-    .stack { height: 540px; max-width: 560px; }
+    .hero-text { grid-template-columns: 1fr; gap: 28px; }
     .sec-head, .case, .ask, .proof, .founder, .wall-row { grid-template-columns: 1fr; gap: 16px; }
     .index-row { grid-template-columns: 90px 1fr; }
     .index-row p { grid-column: 2; }
@@ -369,11 +353,9 @@
     .nav-links a { padding: 12px 0; font-size: 15px; }
     .nav-links .btn { justify-content: center; margin-top: 8px; }
     nav .wrap { gap: 10px; }
-    .stack { height: 620px; }
-    .slip { width: 94%; }
-    .slip.front { left: 3%; }
-    .stamp.verified { right: 0; }
-    .watch, .rules, .news, .surfaces, .figures, .sbs, .outcome { grid-template-columns: 1fr; }
+    .reel { margin-top: 48px; border-radius: 10px; }
+    .reel-row { flex-direction: column; align-items: flex-start; }
+    .watch, .rules, .news, .surfaces, .figures, .sbs { grid-template-columns: 1fr; }
     .pane + .pane { border-left: 0; border-top: 1px solid var(--rule); }
     .news .lead p { columns: 1; }
     .paper { padding: 28px 22px; transform: none; }
@@ -437,9 +419,10 @@
 
 <header class="hero">
   <div class="wrap">
+    <div class="hero-meta"><span class="label"><b>●</b> The AI maintenance engineer</span><span class="label">Built in Brussels</span></div>
+    <div class="hero-text">
+    <h1>Every request your product gets, <em>investigated</em> and <em>answered.</em></h1>
     <div>
-      <div class="hero-meta"><span class="label"><b>●</b> The AI maintenance engineer</span><span class="label">Built in Brussels</span></div>
-      <h1>Every request your product gets, <em>investigated</em> and <em>answered.</em></h1>
       <p class="sub">Deflekt listens to your customers, your errors and your own data. It investigates in your code and in production, then hands your team the answer: a reply, a console command, or a fix <mark>tested side by side</mark> and ready to merge.</p>
       <div class="ctas">
         <a href="mailto:hello@deflekt.dev?subject=Deflekt%20demo" class="btn btn-ink">Book a 20 min demo <span class="arr">→</span></a>
@@ -450,29 +433,11 @@
         <span>Deflekt never acts on production alone. Every reply, command and fix waits for someone on your team to approve it.</span>
       </div>
     </div>
-
-    <div class="stack" aria-label="Example of a case investigated by Deflekt">
-      <div class="slip back1"><div class="slip-head"><b>Sentry</b><span></span></div></div>
-      <div class="slip back2"><div class="slip-head"><b>Data Watch</b><span>charges per renewal → 2</span></div></div>
-      <div class="slip front">
-        <div class="slip-head"><b>Case #5172</b><span>Freshdesk · NL · 08:42</span></div>
-        <span class="stamp urgent">Urgent</span>
-        <p class="quote">“Mijn abonnement is deze maand twee keer afgeschreven.”</p>
-        <p class="from">Pieter, Van Damme Bouw · customer since 2021</p>
-        <ul class="trail">
-          <li><span>08:43</span><div>Read the payments: <b>38 customers</b> charged twice</div></li>
-          <li><span>08:43</span><div><b>€4,218</b> taken since yesterday 17:05</div></li>
-          <li><span>08:44</span><div>Traced to a webhook retry, <b>PR #2214</b></div></li>
-          <li><span>08:44</span><div><b>37 of them</b> haven't noticed yet</div></li>
-        </ul>
-        <div class="perf"></div>
-        <div class="outcome">
-          <div><div class="k">Prepared</div><div class="v">Refunds for 38 · emails</div></div>
-          <div><div class="k">Fix</div><div class="v">PR #2231 · 9 lines</div></div>
-        </div>
-        <span class="stamp verified">Fix verified</span>
-      </div>
     </div>
+    <figure class="reel">
+      <video id="reel" src="hero.mp4" poster="hero-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Deflekt resolving a double charge case, 43 seconds, with captions"></video>
+    </figure>
+    <div class="reel-row"><span>Case #5172, as Deflekt handled it. Captions on.</span><button class="reel-sound" onclick="const v=document.getElementById('reel');v.muted=false;v.loop=false;v.currentTime=0;v.controls=true;v.play();this.remove()"><span>▶</span> Watch with sound · 43 s</button></div>
   </div>
 </header>
 

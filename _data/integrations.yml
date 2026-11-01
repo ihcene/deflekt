@@ -1,0 +1,52 @@
+- category: Help desks
+  names:
+    - { name: Freshdesk, page: freshdesk }
+    - { name: Zendesk, page: zendesk }
+    - { name: Intercom, page: intercom }
+    - { name: Help Scout }
+    - { name: HubSpot }
+    - { name: Front }
+    - { name: Email }
+- category: Issue trackers
+  names:
+    - { name: Jira, page: jira }
+    - { name: Linear, page: linear }
+    - { name: GitHub Issues }
+    - { name: GitLab Issues }
+    - { name: Asana }
+- category: Errors
+  names:
+    - { name: Sentry, page: sentry }
+    - { name: Rollbar }
+    - { name: Bugsnag }
+    - { name: Datadog, page: datadog }
+    - { name: New Relic }
+    - { name: Honeybadger }
+- category: Code and CI
+  names:
+    - { name: GitHub, page: github }
+    - { name: GitLab, page: gitlab }
+    - { name: Bitbucket }
+    - { name: Azure DevOps }
+    - { name: GitHub Actions }
+    - { name: GitLab CI }
+- category: Data, read only
+  names:
+    - { name: PostgreSQL, page: postgresql }
+    - { name: MySQL }
+    - { name: Metabase, page: metabase }
+    - { name: BigQuery }
+    - { name: Snowflake }
+    - { name: Stripe, page: stripe }
+    - { name: Mollie, page: mollie }
+    - { name: Postmark, page: postmark }
+    - { name: SendGrid }
+- category: Team
+  names:
+    - { name: Slack }
+    - { name: Microsoft Teams }
+    - { name: Notion }
+    - { name: Confluence }
+    - { name: Claude Code }
+    - { name: Codex }
+    - { name: MCP }

@@ -1,0 +1,40 @@
+title: Deflekt
+tagline: The AI maintenance engineer for your product
+description: Deflekt investigates every request your product gets, in your code and your production data, and hands your team the answer.
+url: https://deflekt.dev
+logo: /apple-touch-icon.png
+title_separator: "·"
+lang: en
+markdown: kramdown
+kramdown:
+  input: GFM
+  auto_ids: true
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+collections:
+  use_cases:
+    output: true
+    permalink: /use-cases/:name/
+  connectors:
+    output: true
+    permalink: /integrations/:name/
+  comparisons:
+    output: true
+    permalink: /compare/:name/
+  case_files:
+    output: true
+    permalink: /case-files/:name/
+
+defaults:
+  - scope: { type: use_cases }
+    values: { layout: article, section: Use cases, section_url: /use-cases/ }
+  - scope: { type: connectors }
+    values: { layout: article, section: Integrations, section_url: /integrations/ }
+  - scope: { type: comparisons }
+    values: { layout: article, section: Compare, section_url: /compare/ }
+  - scope: { type: case_files }
+    values: { layout: article, section: Case files, section_url: /case-files/ }
+
+exclude: [video, Gemfile, Gemfile.lock, vendor, .bundle, README.md]

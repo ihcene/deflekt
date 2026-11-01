@@ -1,0 +1,15 @@
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="/" class="logo"><img src="/logo.svg" alt="" width="30" height="27"><span>deflekt</span></a>
+        <p>The AI maintenance engineer for your product. Built in Brussels.</p>
+      </div>
+      <div><div class="label">Use cases</div>{% assign uc = site.use_cases | sort: "order" %}{% for d in uc %}<a href="{{ d.url }}">{{ d.title }}</a>{% endfor %}</div>
+      <div><div class="label">Integrations</div>{% assign cn = site.connectors | sort: "order" %}{% for d in cn limit: 8 %}<a href="{{ d.url }}">{{ d.name }}</a>{% endfor %}<a href="/integrations/">All integrations →</a></div>
+      <div><div class="label">Compare</div>{% for d in site.comparisons %}<a href="{{ d.url }}">{{ d.title }}</a>{% endfor %}<div class="label" style="margin-top:22px">Read</div><a href="/case-files/">Case files</a></div>
+      <div><div class="label">Company</div><a href="/#rules">Security</a><a href="/#founder">About</a><a href="mailto:hello@deflekt.dev">Contact</a><a href="https://app.deflekt.dev">Log in</a><a href="https://www.linkedin.com/company/deflekt" target="_blank" rel="noopener">LinkedIn</a></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 Deflekt · Built in Brussels</span><span>hello@deflekt.dev</span></div>
+  </div>
+</footer>

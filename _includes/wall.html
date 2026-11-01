@@ -1,0 +1,5 @@
+<div class="wall">
+  {% for cat in site.data.integrations %}
+  <div class="wall-row"><div class="label">{{ cat.category }}</div><div class="names">{% for n in cat.names %}<span>{% if n.page %}<a href="/integrations/{{ n.page }}/">{{ n.name }}</a>{% else %}{{ n.name }}{% endif %}{% unless forloop.last %} <i>/</i>{% endunless %}</span>{% endfor %}</div></div>
+  {% endfor %}
+</div>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Deflekt reel</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..800,0..100,0..1;1,9..144,300..800,0..100,0..1&family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&display=block" rel="stylesheet">
+<style>
+  :root { --bg: #0F1112; --card: #1A1E20; --ink: #EDE8DD; --ink-2: #B4AFA4; --ink-3: #7C786F; --rule: #2A2F31; --violet: #B79CFF; --cyan: #60E0F0; --pink: #F472B6; --signal: #FF7A3D; --ok: #6CD08A; --gold: #F4D35E; --grad: linear-gradient(100deg, #A78BFA, #C084FC 30%, #60E0F0 60%, #F472B6); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1280px; height: 720px; overflow: hidden; background: var(--bg); color: var(--ink); font-family: "Geist", sans-serif; -webkit-font-smoothing: antialiased; }
+  body::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(#171A1C 1px, transparent 1px), linear-gradient(90deg, #171A1C 1px, transparent 1px); background-size: 48px 48px; -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 30%, transparent 80%); }
+  .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .08em; }
+
+  .top { position: absolute; top: 28px; left: 48px; right: 48px; display: flex; align-items: center; gap: 14px; font-family: "Geist Mono", monospace; font-size: 13px; color: var(--ink-3); letter-spacing: .08em; text-transform: uppercase; z-index: 5; }
+  .top img { height: 22px; }
+  .top .brand { font-family: "Fraunces", serif; font-size: 21px; color: var(--ink); text-transform: none; letter-spacing: -.02em; font-weight: 600; margin-right: 18px; }
+  .steps { display: flex; gap: 22px; margin-left: auto; }
+  .steps span.on { color: var(--ink); }
+  .steps span.on::before { content: "● "; color: var(--violet); }
+  .case { color: var(--ink-2); }
+
+  .scene { position: absolute; inset: 90px 48px 110px; opacity: 0; }
+  .center { display: grid; place-items: center; }
+  .duo { display: grid; grid-template-columns: 380px 1fr; gap: 48px; align-items: center; width: 1150px; }
+
+  .caption { position: absolute; left: 0; right: 0; bottom: 34px; text-align: center; z-index: 6; }
+  .caption span { display: inline-block; max-width: 1040px; font-size: 24px; line-height: 1.35; padding: 8px 18px; border-radius: 8px; background: rgba(10,12,13,.8); color: var(--ink); }
+
+  .card { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.9); position: relative; }
+  .tab { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--rule); font-family: "Geist Mono", monospace; font-size: 13px; color: var(--ink-3); letter-spacing: .08em; text-transform: uppercase; }
+  .tab b { color: var(--ink); font-weight: 600; }
+  .pill { font-family: "Geist Mono", monospace; font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid #3A3F42; color: var(--ink-2); letter-spacing: 0; text-transform: none; white-space: nowrap; }
+  .pill.ok { color: var(--ok); border-color: rgba(108,208,138,.5); }
+  .pill.v { color: var(--violet); border-color: rgba(183,156,255,.5); }
+  .stamp { position: absolute; font-family: "Geist Mono", monospace; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; border: 3px solid currentColor; border-radius: 6px; padding: 10px 16px; font-size: 20px; background: rgba(26,30,32,.88); z-index: 3; }
+
+  /* People */
+  .portrait { position: relative; border-radius: 18px; overflow: visible; }
+  .portrait .frame { border-radius: 18px; overflow: hidden; height: 380px; display: grid; place-items: end center; }
+  .portrait svg { width: 340px; height: 374px; display: block; }
+  .portrait .who { margin-top: 14px; font-family: "Geist Mono", monospace; font-size: 14px; color: var(--ink-3); letter-spacing: .08em; text-transform: uppercase; }
+  .portrait .who b { color: var(--ink); font-weight: 600; }
+  .toast { position: absolute; right: -40px; width: 300px; background: #F6F3EC; color: #16181B; border-radius: 14px; padding: 12px 14px; display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: center; box-shadow: 0 18px 40px -12px rgba(0,0,0,.7); font-size: 14px; z-index: 2; }
+  .toast .ic { width: 34px; height: 34px; border-radius: 9px; background: #FF6200; color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+  .toast .t b { display: block; font-size: 14px; }
+  .toast .t span { font-size: 12.5px; color: #6B6760; }
+  .toast .amt { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* A: ticket */
+  .ticket .body { padding: 26px 30px 30px; }
+  .ticket .quote { font-family: "Fraunces", serif; font-style: italic; font-size: 38px; line-height: 1.2; font-weight: 340; min-height: 140px; }
+  .ticket .from { margin-top: 14px; color: var(--ink-3); font-size: 16px; }
+  .caret { display: inline-block; width: 3px; height: .9em; background: var(--violet); vertical-align: -0.1em; margin-left: 2px; }
+
+  /* B: terminal */
+  .term { width: 900px; font-family: "Geist Mono", monospace; font-size: 21px; line-height: 2; padding: 26px 32px; background: #0A0C0D; }
+  .term .c { color: var(--ink-3); } .term .g { color: var(--cyan); } .term .r { color: #FF8A5B; }
+
+  /* C: discover */
+  .disc { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; width: 1100px; }
+  .big { font-family: "Fraunces", serif; font-size: 150px; line-height: .9; font-weight: 340; letter-spacing: -.04em; font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
+  .big small { display: block; font-family: "Geist Mono", monospace; font-size: 16px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-top: 18px; }
+  .money { font-family: "Fraunces", serif; font-size: 64px; margin-top: 26px; color: var(--gold); font-weight: 380; letter-spacing: -.02em; }
+  .dots { display: grid; grid-template-columns: repeat(8, 52px); gap: 14px; }
+  .dot { width: 52px; height: 52px; border-radius: 50%; border: 2px solid #3A3F42; }
+  .dot.me { border-color: var(--violet); background: rgba(183,156,255,.25); box-shadow: 0 0 0 6px rgba(183,156,255,.12); }
+  .dot.lit { border-color: var(--signal); background: rgba(255,122,61,.16); }
+  .legend { margin-top: 26px; font-size: 18px; color: var(--ink-2); display: flex; gap: 26px; }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+
+  /* D: act */
+  .acts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; width: 1180px; }
+  .acts .card { padding: 0 0 18px; }
+  .acts .txt { padding: 18px 20px 10px; font-size: 18px; line-height: 1.45; min-height: 150px; }
+  .acts .txt.serif { font-family: "Fraunces", serif; font-size: 20px; }
+  .acts .foot { padding: 0 20px; display: flex; gap: 8px; }
+  .acts .num { font-family: "Fraunces", serif; font-size: 48px; line-height: 1; color: var(--gold); }
+
+  /* E: prove */
+  .sbs { display: grid; grid-template-columns: 1fr 1fr; }
+  .pane { padding: 20px; }
+  .pane + .pane { border-left: 1px solid var(--rule); }
+  .pane .h { display: flex; justify-content: space-between; font-family: "Geist Mono", monospace; font-size: 12px; color: var(--ink-3); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 14px; }
+  .screen { border: 1px solid var(--rule); border-radius: 6px; padding: 18px; background: var(--bg); }
+  .bar { height: 9px; border-radius: 5px; background: var(--rule); margin-bottom: 9px; }
+  .screen .n { font-family: "Fraunces", serif; font-size: 76px; line-height: 1; margin-top: 10px; }
+  .screen .cap { color: var(--ink-3); font-size: 15px; margin-top: 6px; }
+  .rec::before { content: "● "; color: var(--signal); }
+  .foot2 { display: flex; gap: 10px; align-items: center; padding: 16px 20px; border-top: 1px solid var(--rule); }
+  .approve { margin-left: auto; font-family: "Geist Mono", monospace; font-size: 15px; font-weight: 600; padding: 10px 18px; border-radius: 999px; background: var(--ink); color: var(--bg); }
+
+  /* F: reply */
+  .mail .body { padding: 24px 28px 28px; font-family: "Fraunces", serif; font-size: 25px; line-height: 1.45; font-variation-settings: "opsz" 24; }
+  .mail .sig { margin-top: 14px; font-style: italic; color: var(--ink-3); font-size: 18px; }
+
+  /* G: brief */
+  .brief { padding: 26px 30px 30px; }
+  .brief .title { font-family: "Fraunces", serif; font-size: 44px; font-weight: 700; letter-spacing: -.02em; text-align: center; border-bottom: 3px double var(--ink); padding-bottom: 10px; }
+  .brief .date { font-family: "Geist Mono", monospace; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); display: flex; justify-content: space-between; margin: 8px 0 18px; }
+  .brief .kicker { font-family: "Geist Mono", monospace; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--signal); }
+  .brief h3 { font-family: "Fraunces", serif; font-size: 34px; font-weight: 600; line-height: 1.1; margin: 6px 0 14px; }
+  .brief h3 em { font-weight: 400; }
+  .brief li { list-style: none; font-family: "Fraunces", serif; font-size: 19px; color: var(--ink-2); padding-left: 16px; position: relative; margin-top: 8px; }
+  .brief li::before { content: "■"; position: absolute; left: 0; top: 8px; font-size: 8px; color: var(--violet); }
+
+  /* H: end */
+  .end { text-align: center; }
+  .end img { height: 84px; }
+  .end .word { font-family: "Fraunces", serif; font-size: 76px; font-weight: 600; letter-spacing: -.03em; margin-top: 12px; font-variation-settings: "SOFT" 100, "WONK" 1; }
+  .end h2 { font-family: "Fraunces", serif; font-size: 44px; font-weight: 360; line-height: 1.15; margin-top: 18px; letter-spacing: -.02em; font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 1; }
+  .end h2 em { font-style: italic; }
+  .end .url { margin-top: 26px; font-family: "Geist Mono", monospace; font-size: 18px; color: var(--ink-3); letter-spacing: .1em; }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <img src="../logo.svg" alt="">
+  <span class="brand">deflekt</span>
+  <span class="case">Case #5172</span>
+  <div class="steps"><span data-step="0">Listen</span><span data-step="1">Investigate</span><span data-step="2">Act</span><span data-step="3">Prove</span><span data-step="4">Remember</span></div>
+</div>
+
+<!-- A · Pieter worries, writes in -->
+<div class="scene center" data-k="L0-0.4" data-out="L1">
+  <div class="duo">
+    <div class="portrait fx" data-k="L0-0.4">
+      <div class="frame" style="background: radial-gradient(circle at 50% 35%, #3A2A22, #221A17)"><div class="person" data-who="pieter" data-a="worried"></div></div>
+      <div class="who"><b>Pieter</b> · customer, Van Damme Bouw</div>
+      <div class="toast fx" data-k="L0+0.3" style="top: 236px"><div class="ic">ING</div><div class="t"><b>Deflekt Pro</b><span>Oct 31 · card payment</span></div><div class="amt">−€119.00</div></div>
+      <div class="toast fx" data-k="L0+1.3" style="top: 306px"><div class="ic">ING</div><div class="t"><b>Deflekt Pro</b><span>Oct 31 · card payment</span></div><div class="amt">−€119.00</div></div>
+    </div>
+    <div class="card ticket fx" data-k="L0+2.2">
+      <div class="tab"><b>Freshdesk · NL</b><span>Monday 08:42</span></div>
+      <div class="body">
+        <p class="quote"><span class="type" data-k="L0+2.6" data-text="“Mijn abonnement is deze maand twee keer afgeschreven.”"></span><span class="caret"></span></p>
+        <p class="from fx" data-k="L0+3.4">Pieter · Van Damme Bouw · customer since 2021</p>
+      </div>
+      <span class="stamp slam" data-k="E0+0.1" style="color:var(--signal); right: 28px; bottom: 26px; --r: 8deg">Urgent</span>
+    </div>
+  </div>
+</div>
+
+<!-- B · Investigate -->
+<div class="scene center" data-k="L1" data-out="L2">
+  <div class="card term fx" data-k="L1">
+    <div class="fx c" data-k="L1+0.1"># payments, read only</div>
+    <div class="fx" data-k="L1+0.5">renewals charged more than once since Oct 31</div>
+    <div class="fx c" data-k="L1+1.3"># code and history</div>
+    <div class="fx" data-k="L1+1.7">payment_webhook.rb:27 · <span class="g">PR #2214</span> · merged yesterday 17:05</div>
+    <div class="fx r" data-k="L1+2.4">idempotency key removed · webhook retried</div>
+  </div>
+</div>
+
+<!-- C · Discover -->
+<div class="scene center" data-k="L2" data-out="L4">
+  <div class="disc">
+    <div>
+      <div class="big"><span class="count" data-k="L2+1.0" data-to="38" data-dur="1.6">1</span><small class="fx" data-k="L2+0.6">customers charged twice</small></div>
+      <div class="money fx" data-k="L2+2.6">€<span class="count" data-k="L2+2.6" data-to="4218.40" data-dec="2" data-dur="1.4">0</span></div>
+    </div>
+    <div>
+      <div class="dots" id="dots"></div>
+      <div class="legend fx" data-k="L3"><span><i style="background:var(--violet)"></i>1 complaint</span><span><i style="background:var(--signal)"></i>37 haven't noticed</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- D · Act -->
+<div class="scene center" data-k="L4" data-out="L5">
+  <div class="acts">
+    <div class="card fx" data-k="L4+0.5">
+      <div class="tab"><b>Reply · NL</b><span class="pill ok">Ready</span></div>
+      <div class="txt serif">Dag Pieter, u heeft gelijk: uw abonnement werd twee keer afgeschreven, door een fout aan onze kant…</div>
+      <div class="foot"><span class="pill">your team's voice</span></div>
+    </div>
+    <div class="card fx" data-k="L4+1.4">
+      <div class="tab"><b>Refunds</b><span class="pill ok">Ready</span></div>
+      <div class="txt"><div class="num">38</div>payments to refund, €4,218.40, one script</div>
+      <div class="foot"><span class="pill">waits for approval</span></div>
+    </div>
+    <div class="card fx" data-k="L4+2.3">
+      <div class="tab"><b>Pull request</b><span class="pill ok">Ready</span></div>
+      <div class="txt">PR #2231 · 9 lines<br><span style="color:var(--ink-2)">Restores the idempotency key, plus a regression test.</span></div>
+      <div class="foot"><span class="pill v">+ email to 37 customers</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- E · Lina approves -->
+<div class="scene center" data-k="L5" data-out="L6">
+  <div class="duo">
+    <div class="portrait fx" data-k="L5">
+      <div class="frame" style="background: radial-gradient(circle at 50% 35%, #2E2647, #1C1828)"><div class="person" data-who="lina" data-a="confident"></div></div>
+      <div class="who"><b>Lina</b> · developer on duty</div>
+    </div>
+    <div class="card fx" data-k="L5+0.4">
+      <div class="tab"><b>PR #2231 · webhook replayed ×3</b><span class="rec">Recording</span></div>
+      <div class="sbs">
+        <div class="pane"><div class="h"><span>Before</span><span>main</span></div><div class="screen"><div class="bar" style="width:60%"></div><div class="bar" style="width:35%"></div><div class="n" style="color:var(--signal)">2×</div><div class="cap">charged per renewal</div></div></div>
+        <div class="pane fx" data-k="L5+1.4"><div class="h"><span>After</span><span>fix</span></div><div class="screen"><div class="bar" style="width:60%"></div><div class="bar" style="width:35%"></div><div class="n" style="color:var(--ok)">1×</div><div class="cap">charged per renewal</div></div></div>
+      </div>
+      <div class="foot2"><span class="pill ok fx" data-k="L5+2.2">tests passing</span><span class="pill v fx" data-k="L5+2.5">9 lines</span><span class="approve fx" data-k="E5-1.6">✓ Approved by Lina</span></div>
+      <span class="stamp slam" data-k="E5-0.9" style="color:var(--ok); right: 44px; bottom: 96px; --r: -7deg; outline: 2px solid currentColor; outline-offset: 3px">Fix verified</span>
+    </div>
+  </div>
+</div>
+
+<!-- F · Pieter relieved -->
+<div class="scene center" data-k="L6" data-out="L7">
+  <div class="duo">
+    <div class="portrait fx" data-k="L6">
+      <div class="frame" style="background: radial-gradient(circle at 50% 35%, #22362A, #17211B)"><div class="person" data-who="pieter" data-a="relieved"></div></div>
+      <div class="who"><b>Pieter</b> · customer, Van Damme Bouw</div>
+      <div class="toast fx" data-k="L6+0.9" style="top: 270px"><div class="ic" style="background:#2E9E5B">ING</div><div class="t"><b>Refund · Deflekt Pro</b><span>Nov 2 · incoming</span></div><div class="amt" style="color:#2E9E5B">+€119.00</div></div>
+    </div>
+    <div class="card mail fx" data-k="L6+0.3">
+      <div class="tab"><b>Reply sent · NL</b><span>08:57</span></div>
+      <div class="body">Dag Pieter, u heeft gelijk: uw abonnement werd twee keer afgeschreven, door een fout aan onze kant. Het dubbele bedrag wordt u terugbetaald. Onze excuses.<div class="sig">Approved by Sarah, support</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- G · Management relieved -->
+<div class="scene center" data-k="L7" data-out="L8">
+  <div class="duo">
+    <div class="portrait fx" data-k="L7">
+      <div class="frame" style="background: radial-gradient(circle at 50% 35%, #1F3438, #152024)"><div class="person" data-who="marc" data-a="tense" data-b="relieved" data-switch="L7+2.4"></div></div>
+      <div class="who"><b>Marc</b> · CEO</div>
+    </div>
+    <div class="card fx" data-k="L7+0.4">
+      <div class="brief">
+        <div class="title">The Morning Brief</div>
+        <div class="date"><span>Tuesday, November 3</span><span>Prepared by Deflekt at 07:00</span></div>
+        <div class="kicker">Solved yesterday</div>
+        <h3>One complaint, <em>thirty eight customers.</em> Solved before nine.</h3>
+        <ul>
+          <li class="fx" data-k="L7+1.6">€4,218 refunded, nobody else had to write in</li>
+          <li class="fx" data-k="L7+2.4">Fix merged, every payment handler now idempotent</li>
+          <li class="fx" data-k="L7+3.2">Remembered: webhooks are retried up to ten times</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- H · End -->
+<div class="scene center" data-k="L8" data-out="END+1">
+  <div class="end">
+    <img class="fx" data-k="L8" src="../logo.svg" alt="">
+    <div class="word fx" data-k="L8+0.2">deflekt</div>
+    <h2 class="fx" data-k="L8+0.9">Every request your product gets,<br><em class="grad">investigated and answered.</em></h2>
+    <div class="url fx" data-k="L8+1.8">DEFLEKT.DEV</div>
+  </div>
+</div>
+
+<div class="caption"><span id="cap"></span></div>
+
+<script>
+  // Every frame is a pure function of t, so the capture is deterministic.
+  const T = window.TIMELINE;
+
+  const people = {
+    pieter: { skin: "#E8B996", shade: "#D49E7B", hair: "#8C8579", shirt: "#3F5A73", collar: "#2F4558", style: "short", glasses: false },
+    lina:   { skin: "#B9805A", shade: "#A26C48", hair: "#1E1715", shirt: "#7C5BD6", collar: "#6347B8", style: "long", glasses: true, mug: true },
+    marc:   { skin: "#F0C9A8", shade: "#DDAF8C", hair: "#3B2C24", shirt: "#E9E4D8", collar: "#2D3A40", style: "side", glasses: false, beard: true }
+  };
+  const faces = {
+    worried:   { brows: "M70 84 L92 76 M108 76 L130 84", eyes: "o", mouth: "M88 128 Q100 120 112 128", sweat: true },
+    tense:     { brows: "M70 80 L92 82 M108 82 L130 80", eyes: "o", mouth: "M90 126 L110 126" },
+    confident: { brows: "M70 80 Q81 74 92 79 M108 77 Q119 70 130 76", eyes: "o", mouth: "M86 121 Q101 133 116 118" },
+    relieved:  { brows: "M70 78 Q81 72 92 77 M108 77 Q119 72 130 78", eyes: "closed", mouth: "M84 120 Q100 138 116 120" }
+  };
+  const hair = {
+    short: { back: "", front: "M54 92 C50 50 80 30 102 32 C128 32 152 50 146 92 C140 70 128 60 102 58 C78 58 62 70 54 92 Z" },
+    long:  { back: "M46 104 C40 46 76 26 102 28 C132 28 162 48 154 106 L160 176 C140 168 62 168 40 176 Z", front: "M56 84 C60 46 96 34 122 42 C140 48 150 64 146 86 C128 66 98 58 56 84 Z" },
+    side:  { back: "", front: "M54 90 C48 46 84 28 108 32 C134 36 152 54 146 90 C142 74 136 64 122 60 C104 66 76 62 62 70 C58 76 56 82 54 90 Z" }
+  };
+  const face = (f, p, id) => `
+    <g class="xp" data-xp="${id}">
+      <path d="${f.brows}" stroke="#2B211C" stroke-width="5" stroke-linecap="round" fill="none"/>
+      ${f.eyes === "closed"
+        ? `<path d="M76 99 Q83 93 90 99 M110 99 Q117 93 124 99" stroke="#2B211C" stroke-width="4" stroke-linecap="round" fill="none"/>`
+        : `<g class="eyes"><ellipse cx="83" cy="99" rx="5" ry="6" fill="#2B211C"/><ellipse cx="117" cy="99" rx="5" ry="6" fill="#2B211C"/></g>`}
+      <path d="${f.mouth}" stroke="#7A3B2E" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+      ${f.sweat ? `<path class="sweat" d="M146 70 C150 78 153 82 150 86 C147 90 141 88 142 82 C143 78 145 74 146 70 Z" fill="#9FD4F5"/>` : ""}
+    </g>`;
+  const person = (p, a, b) => `
+    <svg viewBox="0 0 200 220">
+      <g class="body">
+        <path d="${hair[p.style].back}" fill="${p.hair}"/>
+        <path d="M14 222 C18 170 56 152 100 152 C144 152 182 170 186 222 Z" fill="${p.shirt}"/>
+        <path d="M80 152 L100 176 L120 152 Z" fill="${p.collar}"/>
+        <rect x="87" y="124" width="26" height="36" rx="10" fill="${p.shade}"/>
+        <g class="head">
+          <ellipse cx="56" cy="102" rx="8" ry="11" fill="${p.shade}"/><ellipse cx="144" cy="102" rx="8" ry="11" fill="${p.shade}"/>
+          <ellipse cx="100" cy="96" rx="44" ry="52" fill="${p.skin}"/>
+          ${p.beard ? `<path d="M58 104 C60 140 80 150 100 150 C120 150 140 140 142 104 C136 120 124 128 100 128 C76 128 64 120 58 104 Z" fill="${p.hair}" opacity=".9"/>` : ""}
+          <path d="${hair[p.style].front}" fill="${p.hair}"/>
+          <path d="M98 104 Q94 114 100 116" stroke="${p.shade}" stroke-width="3" fill="none" stroke-linecap="round"/>
+          ${face(faces[a], p, "a")}${b ? face(faces[b], p, "b") : ""}
+          ${p.glasses ? `<g stroke="#1A1A1A" stroke-width="3" fill="rgba(255,255,255,.08)"><rect x="68" y="88" width="30" height="22" rx="8"/><rect x="102" y="88" width="30" height="22" rx="8"/><path d="M98 98 L102 98"/></g>` : ""}
+        </g>
+        ${p.mug ? `<g class="mug"><rect x="122" y="178" width="34" height="40" rx="5" fill="#F6F3EC"/><path d="M156 186 C168 186 168 206 156 206" stroke="#F6F3EC" stroke-width="5" fill="none"/><rect x="122" y="190" width="34" height="8" fill="#B79CFF"/><path class="steam" d="M132 170 C128 162 136 158 132 150 M144 170 C140 162 148 158 144 150" stroke="rgba(237,232,221,.55)" stroke-width="3" fill="none" stroke-linecap="round"/></g>` : ""}
+      </g>
+    </svg>`;
+  document.querySelectorAll(".person").forEach(el => { el.innerHTML = person(people[el.dataset.who], el.dataset.a, el.dataset.b); });
+
+  const dots = document.getElementById("dots");
+  for (let i = 0; i < 38; i++) { const d = document.createElement("div"); d.className = "dot" + (i === 0 ? " me" : ""); d.dataset.i = i; dots.appendChild(d); }
+
+  const at = expr => {
+    const m = expr.match(/^(L|E)(\d)|^END/);
+    const base = expr.startsWith("END") ? T.end : (m[1] === "L" ? T.lines[+m[2]].start : T.lines[+m[2]].end);
+    const off = expr.match(/([+-][\d.]+)$/);
+    return base + (off ? parseFloat(off[1]) : 0);
+  };
+  const clamp = p => Math.min(1, Math.max(0, p));
+  const ease = p => 1 - Math.pow(1 - p, 3);
+  const steps = [["L0", 0], ["L1", 1], ["L4", 2], ["L5", 3], ["L6", 2], ["L7", 4], ["L8", -1]];
+
+  window.render = t => {
+    document.querySelectorAll(".scene").forEach(s => {
+      s.style.opacity = Math.min(clamp((t - at(s.dataset.k)) / .35), clamp((at(s.dataset.out) - t) / .35));
+    });
+    document.querySelectorAll(".fx").forEach(e => {
+      const p = ease(clamp((t - at(e.dataset.k)) / .55));
+      e.style.opacity = p; e.style.transform = `translateY(${(1 - p) * 18}px)`;
+    });
+    document.querySelectorAll(".slam").forEach(e => {
+      const p = clamp((t - at(e.dataset.k)) / .22);
+      e.style.opacity = p; e.style.transform = `rotate(var(--r)) scale(${1.9 - .9 * ease(p)})`;
+    });
+    document.querySelectorAll(".person").forEach((el, n) => {
+      const svg = el.querySelector("svg");
+      svg.querySelector(".body").setAttribute("transform", `translate(0 ${Math.sin(t * 2.1 + n) * 1.6})`);
+      svg.querySelector(".head").setAttribute("transform", `rotate(${Math.sin(t * 1.3 + n) * 1.8} 100 120)`);
+      const blink = ((t + n * 1.7) % 3.4) < .13;
+      svg.querySelectorAll(".eyes").forEach(e => e.setAttribute("transform", blink ? "translate(0 99) scale(1 .12) translate(0 -99)" : ""));
+      const sw = el.dataset.switch ? clamp((t - at(el.dataset.switch)) / .5) : 0;
+      svg.querySelectorAll('[data-xp="a"]').forEach(g => g.setAttribute("opacity", 1 - sw));
+      svg.querySelectorAll('[data-xp="b"]').forEach(g => g.setAttribute("opacity", sw));
+      svg.querySelectorAll(".sweat").forEach(d => d.setAttribute("transform", `translate(0 ${(t * 14) % 22})`));
+      svg.querySelectorAll(".steam").forEach(s => s.setAttribute("opacity", .4 + .4 * Math.sin(t * 3)));
+    });
+    document.querySelectorAll(".type").forEach(e => {
+      const n = Math.floor(Math.max(0, t - at(e.dataset.k)) * 32);
+      e.textContent = e.dataset.text.slice(0, n);
+      e.nextElementSibling.style.opacity = n < e.dataset.text.length || Math.floor(t * 2) % 2 ? 1 : 0;
+    });
+    document.querySelectorAll(".count").forEach(e => {
+      const p = ease(clamp((t - at(e.dataset.k)) / parseFloat(e.dataset.dur)));
+      const v = Math.max(e.dataset.dec ? 0 : 1, p * parseFloat(e.dataset.to));
+      e.textContent = e.dataset.dec ? v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : Math.round(v);
+    });
+    const dIn = at("L2+0.9"), lit = at("L3");
+    dots.querySelectorAll(".dot").forEach(d => {
+      const i = +d.dataset.i;
+      d.style.opacity = i === 0 ? 1 : clamp((t - dIn - i * .04) / .2);
+      d.classList.toggle("lit", i > 0 && t > lit + i * .03);
+    });
+    let step = -1;
+    steps.forEach(([k, s]) => { if (t >= at(k)) step = s; });
+    document.querySelectorAll("[data-step]").forEach(s => s.classList.toggle("on", +s.dataset.step === step));
+    const line = T.lines.find(l => t >= l.start - .1 && t <= l.end + .35);
+    document.getElementById("cap").textContent = line ? line.text : "";
+    document.getElementById("cap").parentElement.style.opacity = line ? 1 : 0;
+  };
+  if (T && !window.CAPTURE) { const t0 = performance.now(); const loop = () => { render(((performance.now() - t0) / 1000) % T.end); requestAnimationFrame(loop); }; loop(); }
+</script>
+</body>
+</html>

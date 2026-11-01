@@ -13,6 +13,10 @@
 <meta name="color-scheme" content="light dark">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <script>
+  addEventListener("DOMContentLoaded", () => {
+    const v = document.getElementById("reel");
+    v.addEventListener("ended", () => { v.controls = false; v.currentTime = 0; document.querySelector(".reel-play").hidden = false; });
+  });
   document.documentElement.dataset.theme = localStorage.getItem("theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -116,9 +120,11 @@
   .reel { position: relative; margin-top: 72px; border-radius: 14px; overflow: hidden; border: 1px solid var(--rule); box-shadow: var(--shadow); background: #0F1112; aspect-ratio: 16 / 9; }
   .reel video { display: block; width: 100%; height: 100%; }
   .reel-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 18px; font-family: "Geist Mono", monospace; font-size: 12.5px; color: var(--ink-3); }
-  .reel-sound { display: inline-flex; gap: 10px; align-items: center; font-family: "Geist Mono", monospace; font-size: 13px; padding: 11px 18px; border-radius: 999px; border: 0; cursor: pointer; background: var(--ink); color: var(--paper); }
-  .reel-sound:hover { transform: translateY(-1px); }
-  .reel-sound span { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--grad); color: #fff; font-size: 10px; }
+  .reel-play { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 18px; border: 0; cursor: pointer; background: radial-gradient(ellipse at center, rgba(15,17,18,.35), rgba(15,17,18,.7)); color: #EDE8DD; font-family: "Geist Mono", monospace; }
+  .reel-play[hidden] { display: none; }
+  .reel-play .ring { width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center; font-size: 28px; padding-left: 6px; color: #fff; background: var(--grad); box-shadow: 0 0 0 10px rgba(255,255,255,.08), 0 20px 50px rgba(0,0,0,.5); transition: transform .2s; }
+  .reel-play:hover .ring { transform: scale(1.07); }
+  .reel-play .lbl { font-size: 14px; letter-spacing: .06em; padding: 8px 14px; border-radius: 999px; background: rgba(15,17,18,.75); }
 
   /* Sections */
   section { padding: 128px 0; border-bottom: 1px solid var(--rule); }
@@ -354,7 +360,8 @@
     .nav-links .btn { justify-content: center; margin-top: 8px; }
     nav .wrap { gap: 10px; }
     .reel { margin-top: 48px; border-radius: 10px; }
-    .reel-row { flex-direction: column; align-items: flex-start; }
+    .reel-play .ring { width: 64px; height: 64px; font-size: 20px; }
+    .reel-play .lbl { font-size: 12px; }
     .watch, .rules, .news, .surfaces, .figures, .sbs { grid-template-columns: 1fr; }
     .pane + .pane { border-left: 0; border-top: 1px solid var(--rule); }
     .news .lead p { columns: 1; }
@@ -435,9 +442,10 @@
     </div>
     </div>
     <figure class="reel">
-      <video id="reel" src="hero.mp4" poster="hero-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Deflekt resolving a double charge case, 52 seconds, featuring the customer, the developer and the CEO, with captions"></video>
+      <video id="reel" src="hero.mp4" poster="hero-poster.jpg" playsinline preload="metadata" aria-label="Deflekt resolving a double charge case, 52 seconds, featuring the customer, the developer and the CEO, with captions"></video>
+      <button class="reel-play" aria-label="Play the video with sound" onclick="const v=document.getElementById('reel');v.controls=true;v.play();this.hidden=true"><span class="ring">▶</span><span class="lbl">Watch the case · 52 s · sound on</span></button>
     </figure>
-    <div class="reel-row"><span>Case #5172, as Deflekt handled it. Captions on.</span><button class="reel-sound" onclick="const v=document.getElementById('reel');v.muted=false;v.loop=false;v.currentTime=0;v.controls=true;v.play();this.remove()"><span>▶</span> Watch with sound · 52 s</button></div>
+    <div class="reel-row"><span>Case #5172, as Deflekt handled it. Captions included.</span></div>
   </div>
 </header>
 

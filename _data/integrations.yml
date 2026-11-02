@@ -13,6 +13,7 @@
     - { name: Linear, page: linear }
     - { name: GitHub Issues }
     - { name: GitLab Issues }
+    - { name: Gitea Issues, page: gitea }
     - { name: Asana }
 - category: Errors
   names:
@@ -26,6 +27,7 @@
   names:
     - { name: GitHub, page: github }
     - { name: GitLab, page: gitlab }
+    - { name: Gitea, page: gitea }
     - { name: Bitbucket }
     - { name: Azure DevOps }
     - { name: GitHub Actions }

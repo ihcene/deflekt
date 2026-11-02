@@ -7,7 +7,7 @@ headline: Fin answers what the docs can. <em>Deflekt answers what only the code 
 description: Deflekt reads Intercom conversations, contacts and companies, picks up what Fin hands over to your team, and investigates it in your code and data before drafting the reply.
 facts:
   Category: Help desk and chat
-  Access: Intercom access token, built during onboarding
+  Access: Intercom access token
   Reads: Conversations, contacts, companies
   Also: Picks up conversations escalated by Fin
 ---
@@ -33,9 +33,9 @@ Intercom makes it easy for customers to write, and Fin answers a good share of t
 
 Deflekt does not replace Fin. Fin handles the questions your documentation already answers. Deflekt handles what Fin escalates, the questions that need someone to look at the code and the data. In case #5310, Camille from Atelier Morel asks in French why her booking reminders went out a day late. Fin finds no article and hands over. Deflekt finds a time zone conversion added in a recent release, checks the reminders sent that week, and gives the agent a French reply plus a pull request with the fix.
 
-## Built during onboarding
+## Fits your Intercom
 
-The Intercom connector is built with you during onboarding, usually within days, on the public Intercom API. It follows your team inboxes and assignment rules rather than adding a new workflow. Your agents keep working in Intercom, and Deflekt's draft is waiting in the conversation when they open it.
+Deflekt works on the public Intercom API. It follows your team inboxes and assignment rules rather than adding a new workflow. Your agents keep working in Intercom, and Deflekt's draft is waiting in the conversation when they open it.
 
 ## Setup
 

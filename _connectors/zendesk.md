@@ -7,7 +7,7 @@ headline: Zendesk routes the ticket. <em>Deflekt finds out what went wrong.</em>
 description: Deflekt reads your Zendesk tickets, comments, users and organizations, investigates each request in your code and data, and drafts a public reply or internal note for your agents to approve.
 facts:
   Category: Help desk
-  Access: API token or OAuth, built during onboarding
+  Access: API token or OAuth
   Reads: Tickets, comments, users, organizations
   Also: Triggers or webhooks for new tickets and updates
 ---
@@ -33,9 +33,9 @@ Zendesk is very good at getting a ticket to the right group. What it cannot do i
 
 Case #4387: Katrin at Hoffmann Logistik writes in German that her delivery report for October is empty. Deflekt reads the ticket and the organization, sees that the report filters on a status renamed in last week's deploy, and confirms in the database that 214 deliveries are missing from her export. The agent gets a German reply explaining the delay, an internal note with the cause, and a pull request that maps the old status to the new one.
 
-## Built during onboarding
+## Fits your Zendesk
 
-The Zendesk connector is built with you during onboarding, usually within days. It uses the standard Zendesk Support API, so nothing needs to be installed in your Zendesk beyond a token and a trigger. We build it against your real ticket fields and groups, not a generic template. Until it is live, anyone can forward a Zendesk ticket to Deflekt as a manual request with its attachments.
+Deflekt uses the standard Zendesk Support API, so nothing needs to be installed in your Zendesk beyond a token and a trigger. It is configured against your real ticket fields and groups, not a generic template.
 
 ## Setup
 

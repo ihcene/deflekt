@@ -7,7 +7,7 @@ headline: Jira tracks the work. <em>Deflekt makes sure the right work gets there
 description: Deflekt reads Jira issues, comments, linked tickets and sprint context, investigates each bug in your code and data, and drafts a clear issue when it finds engineering work that needs planning.
 facts:
   Category: Issue tracker
-  Access: Jira API token, live today
+  Access: Jira API token
   Reads: Issues, comments, linked tickets, sprint context
   Also: Browser extension panel on Jira issues
 ---

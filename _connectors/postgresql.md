@@ -12,7 +12,7 @@ facts:
   Also: Nightly Data Watch probes
 ---
 
-Most support questions end with someone opening a database console. Is this invoice really unpaid? When did this account stop syncing? How many other customers are in the same state? The developer on duty stops what they are doing, writes a query, and pastes the result in a chat. Deflekt does that part itself, with access that cannot change anything. The PostgreSQL connector is live today.
+Most support questions end with someone opening a database console. Is this invoice really unpaid? When did this account stop syncing? How many other customers are in the same state? The developer on duty stops what they are doing, writes a query, and pastes the result in a chat. Deflekt does that part itself, with access that cannot change anything.
 
 ## What Deflekt reads
 

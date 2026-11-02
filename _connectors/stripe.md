@@ -36,7 +36,7 @@ Deflekt never refunds, credits or cancels anything in Stripe. It prepares the sc
 
 ## Setup
 
-The Stripe connector is built during onboarding, usually within days, around how your product stores Stripe IDs.
+Deflekt is configured around how your product stores Stripe IDs.
 
 1. In the Stripe dashboard, create a restricted API key.
 2. Give it **Read** permission on Charges, PaymentIntents, Invoices, Subscriptions, Customers and Events, and **None** on everything else.

@@ -12,7 +12,7 @@ facts:
   Also: Webhook retries checked against your records
 ---
 
-Payment bugs rarely announce themselves. A webhook arrives twice, a retry is treated as a new payment, and the first sign is a polite email from a customer who noticed. By then the same thing has happened to dozens of others. The Mollie connector is live today.
+Payment bugs rarely announce themselves. A webhook arrives twice, a retry is treated as a new payment, and the first sign is a polite email from a customer who noticed. By then the same thing has happened to dozens of others.
 
 ## What Deflekt reads
 

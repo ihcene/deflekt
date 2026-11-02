@@ -7,7 +7,7 @@ headline: Your code lives on GitLab. <em>Deflekt sends its fixes as merge reques
 description: Deflekt reads your GitLab projects and merge requests, opens merge requests with tested fixes across several projects, and answers review comments and failing pipelines until they are ready to merge.
 facts:
   Category: Code and CI
-  Access: Project access tokens, built during onboarding
+  Access: Project access tokens
   Reads: Projects, merge requests, discussions, pipelines
   Also: Recording of the fix embedded in each merge request
 ---
@@ -33,9 +33,9 @@ Teams on GitLab, often self managed, want the same thing as everyone else: fewer
 
 Case #4925: an invoicing product starts rounding VAT per line instead of per invoice after a release, and a Belgian customer notices a one cent difference on 112 invoices. Deflekt finds the change in a merge request from the week before, opens a fix in the backend project and a matching change in the PDF rendering project. The first pipeline fails on a snapshot test that still expects the old rounding. Deflekt updates the snapshot, explains why in the thread, and the pipeline goes green before a reviewer has looked.
 
-## Built during onboarding
+## gitlab.com or self managed
 
-The GitLab connector is built with you during onboarding, usually within days, on the GitLab REST API. It works with gitlab.com and with self managed instances your workers can reach. Workers clone the code inside your network, so source code never leaves it. Only the results, the recording and the merge request links reach the hub, and credentials are encrypted at rest and scoped per project.
+Deflekt works on the GitLab REST API, with gitlab.com and with self managed instances your workers can reach. Workers clone the code inside your network, so source code never leaves it. Only the results, the recording and the merge request links reach the hub, and credentials are encrypted at rest and scoped per project.
 
 ## Setup
 
@@ -44,4 +44,4 @@ The GitLab connector is built with you during onboarding, usually within days, o
 3. Add a project webhook for merge request, comment and pipeline events, pointing at Deflekt.
 4. Start a worker in your network and connect it to your Deflekt project.
 
-Deflekt never merges or pushes to protected branches. Every change is a merge request your team reviews. Compare it with [GitHub](/integrations/github/), or read how it handles [regulatory changes](/use-cases/regulatory-changes/).
+Deflekt never merges or pushes to protected branches. Every change is a merge request your team reviews. Compare it with [GitHub](/integrations/github/) and [Gitea](/integrations/gitea/), or read how it handles [regulatory changes](/use-cases/regulatory-changes/).

@@ -12,7 +12,7 @@ facts:
   Also: Draft replies with the delivery evidence
 ---
 
-"I never received the invoice" is one of the most common tickets a SaaS product gets, and one of the slowest to answer. Support asks a developer, the developer searches the email logs, and the customer waits a day for an answer that takes thirty seconds once you know where to look. Meanwhile the invoice stays unpaid and the reminder goes out to an address that does not work. The Postmark connector is live today.
+"I never received the invoice" is one of the most common tickets a SaaS product gets, and one of the slowest to answer. Support asks a developer, the developer searches the email logs, and the customer waits a day for an answer that takes thirty seconds once you know where to look. Meanwhile the invoice stays unpaid and the reminder goes out to an address that does not work.
 
 ## What Deflekt reads
 

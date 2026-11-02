@@ -7,7 +7,7 @@ headline: Freshdesk holds the question. <em>Deflekt comes back with the answer.<
 description: Deflekt picks up every new Freshdesk ticket and reply, investigates it in your code and data, and drafts the reply or private note your team approves before anything is sent.
 facts:
   Category: Help desk
-  Access: API key and webhooks, live today
+  Access: API key and webhooks
   Reads: Tickets, conversations, attachments, contacts, companies
   Also: Browser extension panel on tickets
 ---

@@ -34,7 +34,7 @@ Take case #4871. A latency monitor on the invoice PDF service fired twice in one
 
 ## Setup
 
-The Datadog connector is built during onboarding, usually within days, against your own account and the way your services are tagged.
+Deflekt is configured against your own account and the way your services are tagged.
 
 1. Create an API key and an application key in Datadog for a dedicated service account.
 2. Scope the application key to read permissions only, such as `monitors_read`, `logs_read_data` and `apm_read`.

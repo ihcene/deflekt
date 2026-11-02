@@ -12,7 +12,7 @@ facts:
   Also: Data Watch through Metabase
 ---
 
-Some teams do not want another tool holding database credentials. Their data already sits behind Metabase, with permissions, groups and an audit trail they trust. For them, Deflekt reads through Metabase instead of connecting to the database directly. The Metabase connector is live today, and it gives Deflekt the same view of the data that your analysts already have, no more.
+Some teams do not want another tool holding database credentials. Their data already sits behind Metabase, with permissions, groups and an audit trail they trust. For them, Deflekt reads through Metabase instead of connecting to the database directly. Deflekt gets the same view of the data that your analysts already have, no more.
 
 ## What Deflekt reads
 

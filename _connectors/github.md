@@ -7,7 +7,7 @@ headline: Your code lives on GitHub. <em>Deflekt's fixes arrive there, tested an
 description: Through a GitHub App, Deflekt reads your repositories and pull requests, opens pull requests across several repositories, fills your template, handles review rounds and embeds the QA recording.
 facts:
   Category: Code and CI
-  Access: GitHub App, live today
+  Access: GitHub App
   Reads: Repositories, pull requests, reviews, CI checks
   Also: Browser extension panel on pull requests
 ---
@@ -55,4 +55,4 @@ Deflekt's workers run inside your own network. They clone your repositories, run
 3. Start a worker in your network and connect it to your Deflekt project.
 4. Install the browser extension to see the Deflekt analysis on each pull request.
 
-Deflekt never merges. Every change is a pull request your team reviews. See how it catches [regressions after a deploy](/use-cases/deploy-regressions/), how it fits next to [coding agents](/compare/coding-agents/), or read the [double charge case](/case-files/double-charge/).
+Deflekt never merges. Every change is a pull request your team reviews. Self hosting your code? The same flow runs on [Gitea](/integrations/gitea/). See how it catches [regressions after a deploy](/use-cases/deploy-regressions/), how it fits next to [coding agents](/compare/coding-agents/), or read the [double charge case](/case-files/double-charge/).

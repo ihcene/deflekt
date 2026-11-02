@@ -7,7 +7,7 @@ headline: Linear keeps the team fast. <em>Deflekt keeps the issues worth the spe
 description: Deflekt reads Linear issues, projects and cycles, investigates bugs in your code and data, and drafts an issue with the cause and a proposed approach when a fix needs planning.
 facts:
   Category: Issue tracker
-  Access: Linear API key, built during onboarding
+  Access: Linear API key
   Reads: Issues, projects, cycles, comments
   Also: Drafts issues for fixes that need planning
 ---
@@ -33,9 +33,9 @@ Linear is fast to write in, which is exactly why so many issues arrive with a ti
 
 Case #5568: a logistics customer reports in French that some shipments show the wrong carrier on the label. Deflekt finds that carrier codes are read from a cached table that is never refreshed when a carrier changes its code. A quick patch would hide it for one account. Instead, Deflekt drafts a Linear issue in the right team: the cause, the 63 shipments affected since the last carrier update, the files involved and a proposal to refresh the cache on change. The engineering lead attaches it to the current project and plans it for the next cycle.
 
-## Built during onboarding
+## Fits your Linear
 
-The Linear connector is built with you during onboarding, usually within days, on the Linear GraphQL API. It respects your teams, workflow states and labels rather than adding its own. Drafted issues use your existing labels and land in the team that owns the code involved, so nothing needs to be triaged twice.
+Deflekt works on the Linear GraphQL API. It respects your teams, workflow states and labels rather than adding its own. Drafted issues use your existing labels and land in the team that owns the code involved, so nothing needs to be triaged twice.
 
 ## Setup
 
